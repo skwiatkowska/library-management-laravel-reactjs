@@ -4,6 +4,10 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class Handler extends ExceptionHandler {
     /**
@@ -46,9 +50,44 @@ class Handler extends ExceptionHandler {
      */
     public function render($request, Exception $exception) {
         if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
-            return response()->json([
-                'message' => 'Resource not found'
-            ], 404);
+            return response()->json(
+                [
+                    'message' => 'RESOURCE_NOT_FOUND'
+                ],
+                404
+            );
+        }
+        if ($exception instanceof UnauthorizedHttpException) {
+            // detect previous instance
+            if ($exception->getPrevious() instanceof TokenExpiredException) {
+                return response()->json(
+                    [
+                        'message' => 'TOKEN_EXPIRED'
+                    ],
+                    $exception->getStatusCode()
+                );
+            } else if ($exception->getPrevious() instanceof TokenInvalidException) {
+                return response()->json(
+                    [
+                        'message' => 'TOKEN_INVALID'
+                    ],
+                    $exception->getStatusCode()
+                );
+            } else if ($exception->getPrevious() instanceof TokenBlacklistedException) {
+                return response()->json(
+                    [
+                        'message' => 'TOKEN_BLACKLISTED'
+                    ],
+                    $exception->getStatusCode()
+                );
+            } else {
+                return response()->json(
+                    [
+                        'message' => "UNAUTHORIZED_REQUEST"
+                    ],
+                    401
+                );
+            }
         }
 
         return parent::render($request, $exception);

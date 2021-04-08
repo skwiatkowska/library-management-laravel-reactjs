@@ -4,15 +4,16 @@ namespace App\Models;
 
 use App\Models\Borrowing;
 
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Auth\Authenticatable as AuthenticableTrait;
 
 use Vinelab\NeoEloquent\Eloquent\Model as NeoEloquent;
 
-class User extends NeoEloquent implements Authenticatable {
+class User extends NeoEloquent implements Authenticatable, JWTSubject {
     use Notifiable, AuthenticableTrait;
-    protected $guard = 'web';
+    // protected $guard = 'web';
     protected $label = 'User';
 
     /**
@@ -37,21 +38,9 @@ class User extends NeoEloquent implements Authenticatable {
      *
      * @var array
      */
-    protected $hidden = [
-        'id',
-        'first_name',
-        'last_name',
-        'pesel',
-        'phone',
-        'email',
-        'street',
-        'house_number',
-        'zipcode',
-        'city',
+    protected $hidden = [        
         'password',
-        'remember_token',
-        'created_at',
-        'updated_at'
+        'remember_token'
     ];
 
     public function borrowings($morph = null) {
@@ -60,5 +49,25 @@ class User extends NeoEloquent implements Authenticatable {
 
     public function reservations($morph = null) {
         return $this->hyperMorph($morph, Reservation::class, 'RESERVED', 'ON');
+    }
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

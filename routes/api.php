@@ -33,7 +33,10 @@ Route::put('/admin/publishers/{id}', 'Admin\PublisherController@update');
 Route::delete('/admin/publishers/{id}', 'Admin\PublisherController@delete');
 
 
-Route::get('/admin/books', 'Admin\BookController@index');
+Route::group(['middleware' => ['assign.guard:users','jwt.auth']],function ()
+{
+    Route::get('/admin/books', 'Admin\BookController@index');
+});
 Route::post('/admin/books', 'Admin\BookController@store');
 Route::get('/admin/books/{id}', 'Admin\BookController@show');
 Route::put('/admin/books/{id}', 'Admin\BookController@update');
@@ -42,8 +45,11 @@ Route::delete('/admin/books/{id}', 'Admin\BookController@delete');
 
 // Route::get('/admin/books', 'Admin\BookController@findBook');
 
+Route::group(['middleware' => ['assign.guard:admins','jwt.auth']],function ()
+{
+    Route::get('/admin/book-items', 'Admin\BookItemController@index');
+});
 
-Route::get('/admin/book-items', 'Admin\BookItemController@index');
 Route::post('/admin/book-items', 'Admin\BookItemController@store');
 Route::get('/admin/book-items/{id}', 'Admin\BookItemController@show');
 Route::put('/admin/book-items/{id}', 'Admin\BookItemController@update');
@@ -57,3 +63,10 @@ Route::get('/admin/users', 'Admin\UserController@findUser');
 Route::get('/admin/users/{id}', 'Admin\UserController@show');
 // Route::put('/admin/users/{id}', 'Admin\UserController@update');
 // Route::delete('/admin/users/{id}', 'Admin\UserController@delete');
+
+
+Route::post('/user/login', 'Auth\UserController@login');
+Route::post('/user/register', 'Auth\UserController@register');
+Route::post('/admin/login', 'Auth\AdminController@login');
+Route::post('/admin/register', 'Auth\AdminController@register');
+

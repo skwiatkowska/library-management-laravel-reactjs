@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\BookItem;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller {
 
@@ -15,7 +16,7 @@ class UserController extends Controller {
         $user = User::where('id', $id)->with('borrowings.bookItem.book.authors')->firstOrFail();
         return response()->json($user);
     }
- 
+
 
     public function storeUser(Request $request) {
         $existingUser = User::where('pesel', $request->pesel)->get();
@@ -44,7 +45,7 @@ class UserController extends Controller {
         return redirect('/pracownik/czytelnicy/' . $user->id)->with(['success' => 'Dodano nowego użytkownika: ' . $request->fname . ' ' . $request->lname]);
     }
 
-    
+
 
     public function updateUser(Request $request, $id) {
         $user = User::where('id', $id)->firstOrFail();
