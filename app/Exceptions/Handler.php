@@ -56,8 +56,14 @@ class Handler extends ExceptionHandler {
                 ],
                 404
             );
-        }
-        if ($exception instanceof UnauthorizedHttpException) {
+        } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            return response()->json(
+                [
+                    'message' => 'ENDPOINT_NOT_FOUND'
+                ],
+                404
+            );
+        } else if ($exception instanceof UnauthorizedHttpException) {
             // detect previous instance
             if ($exception->getPrevious() instanceof TokenExpiredException) {
                 return response()->json(

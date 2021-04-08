@@ -57,7 +57,7 @@ class PublisherController extends Controller {
         $publisher = Publisher::where('id', $id)->firstOrFail();
         $numberOfBooks = $publisher->books()->count();
         if ($numberOfBooks) {
-            return response()->json(['message' => 'You can not delete a publisher with assigned books. Detach or delete them first'], 409);
+            return response()->json(['message' => 'You cannot delete a publisher with assigned books. Detach or delete them first'], 409);
         }
         $publisher->delete();
         return response()->json([

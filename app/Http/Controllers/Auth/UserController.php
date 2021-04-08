@@ -51,4 +51,10 @@ class UserController extends Controller {
 
         return response()->json(['status' => 200, 'user' => $user]);
     }
+
+    public function logout() {
+        auth('users')->logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
+    }
 }

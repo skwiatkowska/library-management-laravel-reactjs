@@ -16,14 +16,16 @@ class AuthorController extends Controller {
 
 
     public function store(Request $request) {
-        $validator = Validator::make($request->all(), [ 
+        $validator = Validator::make($request->all(), [
             'fname' => 'required',
             'fname' => 'required'
         ]);
-      
+
         if ($validator->fails()) {
-          return response()->json(['message' => 'Fields validation failed',
-           'errors'=> $validator->errors()], 400);
+            return response()->json([
+                'message' => 'Fields validation failed',
+                'errors' => $validator->errors()
+            ], 400);
         }
 
         $author = Author::create([
@@ -67,7 +69,7 @@ class AuthorController extends Controller {
         $numberOfBooks = $author->books()->count();
 
         if ($numberOfBooks) {
-            return response()->json(['message' => 'You can not delete an author with assigned books. Detach or delete them first'], 409);
+            return response()->json(['message' => 'You cannot delete an author with assigned books. Detach or delete them first'], 409);
         }
 
         $author->delete();

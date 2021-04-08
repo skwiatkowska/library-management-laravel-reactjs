@@ -106,7 +106,7 @@ class BookController extends Controller {
     public function delete($id) {
         $book = Book::with('bookItems')->where('id', $id)->firstOrFail();
         if ($book->bookItems->count() > 0) {
-            return response()->json(['message' => 'You can not delete a book with active book items. Detach or delete them first'], 403);
+            return response()->json(['message' => 'You cannot delete a book with active book items. Detach or delete them first'], 403);
         }
         $book->delete();
         return response()->json([
@@ -120,8 +120,6 @@ class BookController extends Controller {
         $book = Book::where('id', $id)->with('authors')->with('categories')->with('publisher')->with('bookItems.borrowings.user')->firstOrFail();
         return response()->json($book);
     }
-
-
 
 
 

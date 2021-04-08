@@ -4,82 +4,139 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\BookItem;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller {
 
 
+    public function index() {
+        $users = User::all();
+        return response()->json($users);
+    }
+
     public function show($id) {
-        $user = User::where('id', $id)->with('borrowings.bookItem.book.authors')->firstOrFail();
+        $user = User::where('id', $id)->firstOrFail();
         return response()->json($user);
     }
 
 
-    public function storeUser(Request $request) {
+    public function store(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'fname' => 'required',
+            'fname' => 'required',
+            'email' => 'required',
+            'password' => 'required',
+            'phone' => 'required',
+            'pesel' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Fields validation failed',
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
         $existingUser = User::where('pesel', $request->pesel)->get();
         if ($existingUser->count() > 0) {
-            return redirect()->back()->withErrors('Istnieje już użytkownik o podanym numerze PESEL');
+            return response()->json(['message' => 'A user with the given PESEL already exists'], 409);
         }
         $existingUser = User::where('email', $request->email)->get();
         if ($existingUser->count() > 0) {
-            return redirect()->back()->withErrors('Istnieje już użytkownik o podanym adresie email');
+            return response()->json(['message' => 'A user with the given email already exists'], 409);
         }
         $user = User::create([
-            'first_name' => $request->fname,
-            'last_name' => $request->lname,
+            'fname' => $request->fname,
+            'lname' => $request->lname,
             'pesel' => $request->pesel,
             'email' => $request->email,
             'phone' => $request->phone,
-            'street' => $request->street,
-            'house_number' => $request->house_number,
-            'zipcode' => $request->zipcode,
-            'city' => $request->city,
             'password' => Hash::make($request->pesel)
         ]);
-        if ($request->isModal == 'true') {
-            return response()->json(['success' => 'Dodano nowego Czytelnika: ' . $request->fname . ' ' . $request->lname]);
-        }
-        return redirect('/pracownik/czytelnicy/' . $user->id)->with(['success' => 'Dodano nowego użytkownika: ' . $request->fname . ' ' . $request->lname]);
+        return response()->json([
+            'message' => 'A user has been created',
+            'publisher' => $user
+        ]);
     }
 
 
 
-    public function updateUser(Request $request, $id) {
+    public function update(Request $request, $id) {
         $user = User::where('id', $id)->firstOrFail();
-        if ($request->name == "fname" && $user->first_name != $request->value) {
-            $user->first_name = $request->value;
-        } else if ($request->name == "lname" && $user->last_name != $request->value) {
-            $user->last_name = $request->value;
-        } else if ($request->name == "pesel" && $user->pesel != $request->value) {
-            $existingUser = User::where('pesel', $request->value)->get();
+
+        if ($user->fname != $request->fname) {
+            $user->fname = $request->fname;
+        }
+        if ($user->lname != $request->lname) {
+            $user->lname = $request->lname;
+        }
+        if ($user->pesel != $request->pesel) {
+            $existingUser = User::where('pesel', $request->pesel)->get();
             if ($existingUser->count() > 0) {
-                return redirect()->back()->withErrors('Istnieje już użytkownik o podanym numerze PESEL');
+                return response()->json(['message' => 'A user with the given PESEL already exists'], 409);
             }
-            $user->pesel = $request->value;
-        } else if ($request->name == "phone" && $user->phone != $request->value) {
-            $user->phone = $request->value;
-        } else if ($request->name == "email" && $user->email != $request->value) {
-            $existingUser = User::where('email', $request->value)->get();
+            $user->pesel = $request->pesel;
+        }
+        if ($user->phone != $request->phone) {
+            $user->phone = $request->phone;
+        }
+        if ($user->email != $request->email) {
+            $existingUser = User::where('email', $request->email)->get();
             if ($existingUser->count() > 0) {
-                return redirect()->back()->withErrors('Istnieje już użytkownik o podanym adresie email');
+                return response()->json(['message' => 'A user with the given email already exists'], 409);
             }
-            $user->email = $request->value;
-        } else if ($request->name == "street" && $user->street != $request->value) {
-            $user->street = $request->value;
-        } else if ($request->name == "house_number" && $user->house_number != $request->value) {
-            $user->house_number = $request->value;
-        } else if ($request->name == "zipcode" && $user->zipcode != $request->value) {
-            $user->zipcode = $request->value;
-        } else if ($request->name == "city" && $user->city != $request->value) {
-            $user->city = $request->value;
+            $user->email = $request->email;
         }
         $user->save();
-        return response()->json(['success' => 'Dane zostały zmienione']);
+        return response()->json([
+            'message' => 'A user has been updated',
+            'publisher' => $user
+        ]);
     }
 
+
+
+    public function delete($id) {
+        $user = User::where('id', $id)->firstOrFail();
+        if (!empty($user->borrowings)) {
+            foreach ($user->borrowings as $borrowing) {
+                if (!isset($borrowing->actual_return_date)) {
+                    return response()->json(['message' => 'You cannot delete a user with borrowed books'], 409);
+                }
+            }
+        }
+        if (!empty($user->reservations)) {
+            foreach ($user->reservations as $reservation) {
+                if (!isset($reservation->actual_return_date)) {
+                    return response()->json(['message' => 'You cannot delete a user with reserved books'], 409);
+                }
+            }
+        }
+
+        if (!empty($user->borrowings)) {
+            foreach ($user->borrowings as $borrowing) {
+                $borrowing->bookItem->deleteRelatedBorrowing($borrowing->id);
+            }
+        }
+        if (!empty($user->reservations)) {
+            foreach ($user->reservations as $reservation) {
+                $reservation->bookItem->deleteRelatedReservation($reservation->id);
+            }
+        }
+        $user->delete();
+        return response()->json([
+            'message' => 'A user has been deleted'
+        ]);
+    }
+
+
+
+
+
+
+// ??????
     public function findUser(Request $request) {
         if ($request->all()) {
             $searchIn = $request->searchIn;
@@ -102,37 +159,5 @@ class UserController extends Controller {
             $users = User::all();
             return view('/admin/findUser', ['users' => $users]);
         }
-    }
-
-
-    public function deleteUser(Request $request) {
-        $user = User::with('borrowings.bookItem')->with('reservations.bookItem')->where('id', $request->id)->firstOrFail();
-        if (!empty($user->borrowings)) {
-            foreach ($user->borrowings as $borrowing) {
-                if (!isset($borrowing->actual_return_date)) {
-                    return back()->withErrors("Nie można usunąć użytkownika z wypożyczonymi książkami");
-                }
-            }
-        }
-        if (!empty($user->reservations)) {
-            foreach ($user->reservations as $reservation) {
-                if (!isset($reservation->actual_return_date)) {
-                    return back()->withErrors("Nie można usunąć użytkownika z zarezerwowanymi książkami");
-                }
-            }
-        }
-
-        if (!empty($user->borrowings)) {
-            foreach ($user->borrowings as $borrowing) {
-                $borrowing->bookItem->deleteRelatedBorrowing($borrowing->id);
-            }
-        }
-        if (!empty($user->reservations)) {
-            foreach ($user->reservations as $reservation) {
-                $reservation->bookItem->deleteRelatedReservation($reservation->id);
-            }
-        }
-        $user->delete();
-        return redirect('/pracownik/czytelnicy')->with("success", "Czytelnik " . $user->first_name . " " . $user->last_name . " został usunięty na stałe");
     }
 }
