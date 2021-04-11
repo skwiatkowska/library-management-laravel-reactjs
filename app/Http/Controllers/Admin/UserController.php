@@ -11,8 +11,25 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller {
 
 
-    public function index() {
+
+    public function index(Request $request) {
         $users = User::all();
+        if ($request->has('pesel')) {
+            $users = User::where('pesel', $request->pesel)->get();
+        }
+
+        if ($request->has('lname')) {
+            $users = User::where('last_name', '=~', '.*' . $request->lname . '.*')->get();
+        }
+
+        if ($request->has('email')) {
+            $users = User::where('email', $request->email)->get();
+        }
+
+        if ($request->has('phone')) {
+            $users = User::where('phone', $request->email)->get();
+        }
+
         return response()->json($users);
     }
 
@@ -129,35 +146,5 @@ class UserController extends Controller {
         return response()->json([
             'message' => 'A user has been deleted'
         ]);
-    }
-
-
-
-
-
-
-// ??????
-    public function findUser(Request $request) {
-        if ($request->all()) {
-            $searchIn = $request->searchIn;
-            $phrase = $request->phrase;
-            $searchInMode = null;
-            if ($searchIn == "pesel") {
-                $users = User::where('pesel', $phrase)->get();
-                $searchInMode = "PESEL";
-            } elseif ($searchIn == "lname") {
-                $users = User::where('last_name', '=~', '.*' . $phrase . '.*')->get();
-                $searchInMode = "nazwisko";
-            }
-
-            if (!$users->count()) {
-                $users = collect();
-                return view('/admin/findUser', ['users' => $users])->withErrors("Nie znaleziono Czytelników spełniających podane kryterium wyszukiwania: " . $phrase . " (" . $searchInMode . ")");
-            }
-            return view('/admin/findUser', ['users' => $users, 'phrase' => $phrase]);
-        } else {
-            $users = User::all();
-            return view('/admin/findUser', ['users' => $users]);
-        }
     }
 }

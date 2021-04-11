@@ -44,7 +44,6 @@ Route::group(['middleware' => ['assign.guard:admins', 'jwt.auth']], function () 
 
 
 
-// Route::get('/admin/books', 'Admin\BookController@findBook');
 Route::get('/admin/books', 'Admin\BookController@index');
 Route::post('/admin/books', 'Admin\BookController@store');
 Route::get('/admin/books/{id}', 'Admin\BookController@show');
@@ -61,7 +60,6 @@ Route::delete('/admin/book-items/{id}', 'Admin\BookItemController@delete');
 
 
 Route::group(['prefix' => 'admin', 'middleware' => ['assign.guard:admins', 'jwt.auth']], function () {
-    // Route::get('/users', 'Admin\UserController@findUser');
 
 Route::get('/users', 'Admin\UserController@index');
 Route::get('/users/{id}', 'Admin\UserController@show');
@@ -70,7 +68,7 @@ Route::put('/users/{id}', 'Admin\UserController@update');
 Route::delete('/users/{id}', 'Admin\UserController@delete');
 });
 
-Route::group(['prefix' => 'user', 'middleware' => ['assign.guard:users', 'jwt.auth']], function () {
+Route::group(['prefix' => 'users', 'middleware' => ['assign.guard:users', 'jwt.auth']], function () {
     Route::post('/logout', 'Auth\UserController@logout');
 
 });
@@ -81,6 +79,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['assign.guard:admins', 'jwt.
 });
 
 
-Route::post('/user/login', 'Auth\UserController@login');
-Route::post('/user/register', 'Auth\UserController@register');
+Route::get('/users/me', 'Auth\UserController@getAuthUser');
+Route::post('/users/login', 'Auth\UserController@login');
+Route::post('/users/register', 'Auth\UserController@register');
 Route::post('/admin/login', 'Auth\AdminController@login');

@@ -33,6 +33,16 @@ class UserController extends Controller {
         return $this->createNewToken($token);
     }
 
+    public function getAuthUser() {
+        $guard = 'users';
+        $user = auth($guard)->user();
+        if(!$user){
+            $guard = 'admins';
+            $user = auth($guard)->user();
+        }
+        return response()->json(['user' => $user, 'type' => $guard]);
+    }
+
     protected function createNewToken($token) {
         $user = auth('users')->user();
 

@@ -8,29 +8,27 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Auth\Authenticatable as AuthenticableTrait;
+use eloquentFilter\QueryFilter\ModelFilters\Filterable;
 
 use Vinelab\NeoEloquent\Eloquent\Model as NeoEloquent;
 
 class User extends NeoEloquent implements Authenticatable, JWTSubject {
-    use Notifiable, AuthenticableTrait;
-    // protected $guard = 'web';
-    protected $label = 'User';
+    use Notifiable, AuthenticableTrait, Filterable;
 
+    protected $label = 'User';
+    private static $whiteListFilter = ['*'];
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'first_name',
-        'last_name',
+        'fname',
+        'lname',
         'pesel',
         'phone',
         'email',
-        'password',
-        'city',
-        'street',
-        'zipcode'
+        'password'
     ];
 
     /**
