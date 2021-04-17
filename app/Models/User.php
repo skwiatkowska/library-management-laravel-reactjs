@@ -2,28 +2,33 @@
 
 namespace App\Models;
 
+use App\Models\Borrowing;
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Auth\Authenticatable as AuthenticableTrait;
+use eloquentFilter\QueryFilter\ModelFilters\Filterable;
 
 use Vinelab\NeoEloquent\Eloquent\Model as NeoEloquent;
 
-class Admin extends NeoEloquent implements Authenticatable, JWTSubject {
-    use Notifiable, AuthenticableTrait;
+class User extends NeoEloquent implements Authenticatable, JWTSubject {
+    use Notifiable, AuthenticableTrait, Filterable;
 
-    protected $label = 'Admin';
-
+    protected $label = 'User';
+    private static $whiteListFilter = ['*'];
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'id',
-        'email', 
-        'password',
+        'fname',
+        'lname',
+        'pesel',
+        'phone',
+        'email',
+        'password'
     ];
 
     /**
@@ -31,10 +36,18 @@ class Admin extends NeoEloquent implements Authenticatable, JWTSubject {
      *
      * @var array
      */
-    protected $hidden = [
+    protected $hidden = [        
         'password',
         'remember_token'
     ];
+
+    public function borrowings($morph = null) {
+        return $this->hyperMorph($morph, Borrowing::class, 'BORROWED', 'ON');
+    }
+
+    public function reservations($morph = null) {
+        return $this->hyperMorph($morph, Reservation::class, 'RESERVED', 'ON');
+    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

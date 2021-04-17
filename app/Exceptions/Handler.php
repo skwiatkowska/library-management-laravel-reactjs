@@ -4,9 +4,12 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
-class Handler extends ExceptionHandler
-{
+class Handler extends ExceptionHandler {
     /**
      * A list of the exception types that are not reported.
      *
@@ -34,8 +37,7 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return void
      */
-    public function report(Exception $exception)
-    {
+    public function report(Exception $exception) {
         parent::report($exception);
     }
 
@@ -46,8 +48,59 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
-    {
+    public function render($request, Exception $exception) {
+        if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            return response()->json(
+                [
+                    'error' => 'RESOURCE_NOT_FOUND',
+                    'message' => $exception->getMessage()
+                ],
+                404
+            );
+        } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            return response()->json(
+                [
+                    'error' => 'ENDPOINT_NOT_FOUND'
+                ],
+                404
+            );
+        } else if ($exception instanceof UnauthorizedHttpException) {
+            // detect previous instance
+            if ($exception->getPrevious() instanceof TokenExpiredException) {
+                return response()->json(
+                    [
+                        'error' => 'TOKEN_EXPIRED',
+                        'message' => $exception->getMessage()
+                    ],
+                    $exception->getStatusCode()
+                );
+            } else if ($exception->getPrevious() instanceof TokenInvalidException) {
+                return response()->json(
+                    [
+                        'error' => 'TOKEN_INVALID',
+                        'message' => $exception->getMessage()
+                    ],
+                    $exception->getStatusCode()
+                );
+            } else if ($exception->getPrevious() instanceof TokenBlacklistedException) {
+                return response()->json(
+                    [
+                        'error' => 'TOKEN_BLACKLISTED',
+                        'message' => $exception->getMessage()
+                    ],
+                    $exception->getStatusCode()
+                );
+            } else {
+                return response()->json(
+                    [
+                        'error' => "UNAUTHORIZED_REQUEST",
+                        'message' => $exception->getMessage()
+                    ],
+                    401
+                );
+            }
+        }
+
         return parent::render($request, $exception);
     }
 }

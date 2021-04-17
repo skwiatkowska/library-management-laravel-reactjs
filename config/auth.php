@@ -45,6 +45,14 @@ return [
             'driver' => 'token',
             'provider' => 'users',
         ],
+        'admins' => [
+            'driver' => 'jwt',
+            'provider' => 'admins',
+        ],
+        'users' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ]
     ],
 
     /*
@@ -65,9 +73,14 @@ return [
     */
 
     'providers' => [
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class,
+        ],
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\User::class,
+            'model' => App\Models\User::class,
+
         ],
 
         // 'users' => [
