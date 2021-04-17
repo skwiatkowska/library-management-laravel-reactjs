@@ -10,76 +10,75 @@
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/admin/authors', 'Admin\AuthorController@index');
-Route::get('/admin/authors/{id}', 'Admin\AuthorController@show');
-
-Route::group(['middleware' => ['assign.guard:admins', 'jwt.auth']], function () {
-    Route::post('/admin/authors', 'Admin\AuthorController@store');
-    Route::put('/admin/authors/{id}', 'Admin\AuthorController@update');
-    Route::delete('/admin/authors/{id}', 'Admin\AuthorController@delete');
-});
+Route::post('/admin/login', 'Auth\AdminController@login');
+Route::post('/login', 'Auth\UserController@login');
+Route::post('/register', 'Auth\UserController@register');
 
 
-
-Route::get('/admin/categories', 'Admin\CategoryController@index');
-Route::get('/admin/categories/{id}', 'Admin\CategoryController@show');
-
-Route::group(['middleware' => ['assign.guard:admins', 'jwt.auth']], function () {
-    Route::post('/admin/categories', 'Admin\CategoryController@store');
-    Route::put('/admin/categories/{id}', 'Admin\CategoryController@update');
-    Route::delete('/admin/categories/{id}', 'Admin\CategoryController@delete');
-});
-
-
-
-Route::get('/admin/publishers', 'Admin\PublisherController@index');
-Route::get('/admin/publishers/{id}', 'Admin\PublisherController@show');
-
-
-Route::group(['middleware' => ['assign.guard:admins', 'jwt.auth']], function () {
-    Route::post('/admin/publishers', 'Admin\PublisherController@store');
-    Route::put('/admin/publishers/{id}', 'Admin\PublisherController@update');
-    Route::delete('/admin/publishers/{id}', 'Admin\PublisherController@delete');
-});
-
-
-
-Route::get('/admin/books', 'Admin\BookController@index');
-Route::post('/admin/books', 'Admin\BookController@store');
-Route::get('/admin/books/{id}', 'Admin\BookController@show');
-Route::put('/admin/books/{id}', 'Admin\BookController@update');
-Route::delete('/admin/books/{id}', 'Admin\BookController@delete');
-
-
-
-Route::get('/admin/book-items', 'Admin\BookItemController@index');
-Route::post('/admin/book-items', 'Admin\BookItemController@store');
-Route::get('/admin/book-items/{id}', 'Admin\BookItemController@show');
-Route::put('/admin/book-items/{id}', 'Admin\BookItemController@update');
-Route::delete('/admin/book-items/{id}', 'Admin\BookItemController@delete');
-
-
-Route::group(['prefix' => 'admin', 'middleware' => ['assign.guard:admins', 'jwt.auth']], function () {
-
-Route::get('/users', 'Admin\UserController@index');
-Route::get('/users/{id}', 'Admin\UserController@show');
-Route::post('/users', 'Admin\UserController@store');
-Route::put('/users/{id}', 'Admin\UserController@update');
-Route::delete('/users/{id}', 'Admin\UserController@delete');
-});
-
-Route::group(['prefix' => 'users', 'middleware' => ['assign.guard:users', 'jwt.auth']], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['assign.guard:users', 'jwt.auth']], function () {
+    Route::get('/me', 'Auth\UserController@getAuthUser');
     Route::post('/logout', 'Auth\UserController@logout');
 
+
+    // Route::post('/book-items/{id}/reserve', 'BookItemController@reserve');
+
+
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => ['assign.guard:admins', 'jwt.auth']], function () {
+    Route::get('/me', 'Auth\UserController@getAuthUser');
     Route::post('/logout', 'Auth\AdminController@logout');
     Route::post('/register', 'Auth\AdminController@register');
+
+    Route::get('/users', 'UserController@index');
+    Route::get('/users/{id}', 'UserController@show');
+    Route::post('/users', 'UserController@store');
+    Route::put('/users/{id}', 'UserController@update');
+    Route::delete('/users/{id}', 'UserController@delete');
+
+    Route::get('/publishers', 'PublisherController@index');
+    Route::get('/publishers/{id}', 'PublisherController@show');   
+    Route::post('/publishers', 'PublisherController@store');
+    Route::put('/publishers/{id}', 'PublisherController@update');
+    Route::delete('/publishers/{id}', 'PublisherController@delete');
+
+    Route::get('/categories', 'CategoryController@index');
+    Route::get('/categories/{id}', 'CategoryController@show');
+    Route::post('/categories', 'CategoryController@store');
+    Route::put('/categories/{id}', 'CategoryController@update');
+    Route::delete('/categories/{id}', 'CategoryController@delete');
+
+    Route::get('/authors', 'AuthorController@index');
+    Route::get('/authors/{id}', 'AuthorController@show');
+    Route::post('/authors', 'AuthorController@store');
+    Route::put('/authors/{id}', 'AuthorController@update');
+    Route::delete('/authors/{id}', 'AuthorController@delete');
+
+    Route::get('/books', 'BookController@index');
+    Route::get('/books/{id}', 'BookController@show');
+    Route::post('/books', 'BookController@store');
+    Route::put('/books/{id}', 'BookController@update');
+    Route::delete('/books/{id}', 'BookController@delete');
+
+    Route::get('/book-items', 'BookItemController@index');
+    Route::get('/book-items/{id}', 'BookItemController@show');
+    Route::post('/book-items', 'BookItemController@store');
+    Route::put('/book-items/{id}', 'BookItemController@update');
+    Route::delete('/book-items/{id}', 'BookItemController@delete');
+
+    Route::post('/book-items/{id}/borrow', 'BookItemController@borrowBook');
+    Route::post('/book-items/{id}/return', 'BookItemController@returnBook');
+
+    Route::get('/borrowings', 'BorrowingController@index');
+
+
+    // Route::get('/reservations', 'ReservationController@index');
+    // Route::get('/reservations/{id}', 'ReservationController@show');
+    // Route::delete('/reservations/{id}', 'ReservationController@delete');
 });
 
 
-Route::get('/users/me', 'Auth\UserController@getAuthUser');
-Route::post('/users/login', 'Auth\UserController@login');
-Route::post('/users/register', 'Auth\UserController@register');
-Route::post('/admin/login', 'Auth\AdminController@login');
+
+
+
+

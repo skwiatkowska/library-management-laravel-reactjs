@@ -52,14 +52,15 @@ class Handler extends ExceptionHandler {
         if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
             return response()->json(
                 [
-                    'message' => 'RESOURCE_NOT_FOUND'
+                    'error' => 'RESOURCE_NOT_FOUND',
+                    'message' => $exception->getMessage()
                 ],
                 404
             );
         } else if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
             return response()->json(
                 [
-                    'message' => 'ENDPOINT_NOT_FOUND'
+                    'error' => 'ENDPOINT_NOT_FOUND'
                 ],
                 404
             );
@@ -68,28 +69,32 @@ class Handler extends ExceptionHandler {
             if ($exception->getPrevious() instanceof TokenExpiredException) {
                 return response()->json(
                     [
-                        'message' => 'TOKEN_EXPIRED'
+                        'error' => 'TOKEN_EXPIRED',
+                        'message' => $exception->getMessage()
                     ],
                     $exception->getStatusCode()
                 );
             } else if ($exception->getPrevious() instanceof TokenInvalidException) {
                 return response()->json(
                     [
-                        'message' => 'TOKEN_INVALID'
+                        'error' => 'TOKEN_INVALID',
+                        'message' => $exception->getMessage()
                     ],
                     $exception->getStatusCode()
                 );
             } else if ($exception->getPrevious() instanceof TokenBlacklistedException) {
                 return response()->json(
                     [
-                        'message' => 'TOKEN_BLACKLISTED'
+                        'error' => 'TOKEN_BLACKLISTED',
+                        'message' => $exception->getMessage()
                     ],
                     $exception->getStatusCode()
                 );
             } else {
                 return response()->json(
                     [
-                        'message' => "UNAUTHORIZED_REQUEST"
+                        'error' => "UNAUTHORIZED_REQUEST",
+                        'message' => $exception->getMessage()
                     ],
                     401
                 );

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Models\Author;
 use App\Models\Book;
@@ -15,82 +15,85 @@ class BookController extends Controller {
 
 
     public function index(Request $request) {
-        $books = Book::all();
-        
-        if ($request->has('category')) {
-            $category = Category::where('id', $request->category)->firstOrFail();
-            $books = $category->books();
-        }
+        if (count($request->all()) == 0) {
 
-        if ($request->has('title')) {
-            $books = Book::where('title', '=~', '.*' . $request->title . '.*');
-        }
-
-        if ($request->has('isbn')) {
-            $books = Book::where('isbn', (int)$request->isbn);
-        }
-
-        if ($request->has('author')) {
-            $words = explode(" ", $request->author);
-            if (count($words) > 1) {
-                $authors = Author::where('last_name', '=~', '.*' . $words[0] . '.*')->get();
-
-                foreach ($words as $index => $word) {
-                    if ($index != 0) {
-                        $subauthor = Author::where('last_name', '=~', '.*' . $word . '.*')->get();
-                        $authors = $authors->merge($subauthor);
-                    }
-                }
-            } else {
-                $authors = Author::where('last_name', '=~', '.*' . $words[0] . '.*')->get();
+            $booksWithRelations = Book::with('authors')->with('categories')->with('publisher')->with('bookItems')->get();
+        } else {
+            if ($request->has('category')) {
+                $category = Category::where('id', $request->category)->firstOrFail();
+                $books = $category->books();
             }
 
-            if ($authors->count()) {
+            if ($request->has('title')) {
+                $books = Book::where('title', '=~', '.*' . $request->title . '.*');
+            }
 
-                $authorIds = array();
-                foreach ($authors as $author) {
-                    array_push($authorIds, $author->id);
-                }
+            if ($request->has('isbn')) {
+                $books = Book::where('isbn', (int)$request->isbn);
+            }
 
-                $books = Author::find($authorIds[0])->books();
+            if ($request->has('author')) {
+                $words = explode(" ", $request->author);
+                if (count($words) > 1) {
+                    $authors = Author::where('last_name', '=~', '.*' . $words[0] . '.*')->get();
 
-                foreach ($authorIds as $index => $authorId) {
-                    if ($index != 0) {
-                        $subquery = Author::find($authorId)->books();
-                        if ($subquery->count() > 0) {
-                            $books = $books->merge($subquery);
+                    foreach ($words as $index => $word) {
+                        if ($index != 0) {
+                            $subauthor = Author::where('last_name', '=~', '.*' . $word . '.*')->get();
+                            $authors = $authors->merge($subauthor);
                         }
                     }
-                }
-            } else {
-                return response()->json(array());
-            }
-        }
-
-        if ($request->has('publisher')) {
-            $publishers = Publisher::where('name', '=~', '.*' . $request->publisher . '.*')->get();
-            if ($publishers->count()) {
-
-                $publisherIds = array();
-                foreach ($publishers as $publisher) {
-                    array_push($publisherIds, $publisher->id);
+                } else {
+                    $authors = Author::where('last_name', '=~', '.*' . $words[0] . '.*')->get();
                 }
 
-                $books = Publisher::find($publisherIds[0])->books();
-                foreach ($publisherIds as $index => $publisherId) {
-                    if ($index != 0) {
-                        $subquery = Publisher::find($publisherId)->books();
-                        if ($subquery->count() > 0) {
-                            $books = $books->merge($subquery);
+                if ($authors->count()) {
+
+                    $authorIds = array();
+                    foreach ($authors as $author) {
+                        array_push($authorIds, $author->id);
+                    }
+
+                    $books = Author::find($authorIds[0])->books();
+
+                    foreach ($authorIds as $index => $authorId) {
+                        if ($index != 0) {
+                            $subquery = Author::find($authorId)->books();
+                            if ($subquery->count() > 0) {
+                                $books = $books->merge($subquery);
+                            }
                         }
                     }
+                } else {
+                    return response()->json(array());
                 }
-            } else {
-                return response()->json(array());
             }
-        }
 
-        $booksWithRelations = $books->with('authors')->with('categories')->with('publisher')->with('bookItems')->get();
+            if ($request->has('publisher')) {
+                $publishers = Publisher::where('name', '=~', '.*' . $request->publisher . '.*')->get();
+                if ($publishers->count()) {
+
+                    $publisherIds = array();
+                    foreach ($publishers as $publisher) {
+                        array_push($publisherIds, $publisher->id);
+                    }
+
+                    $books = Publisher::find($publisherIds[0])->books();
+                    foreach ($publisherIds as $index => $publisherId) {
+                        if ($index != 0) {
+                            $subquery = Publisher::find($publisherId)->books();
+                            if ($subquery->count() > 0) {
+                                $books = $books->merge($subquery);
+                            }
+                        }
+                    }
+                } else {
+                    return response()->json(array());
+                }
+            }
+
+            $booksWithRelations = $books->with('authors')->with('categories')->with('publisher')->with('bookItems')->get();
+        }
         return response()->json($booksWithRelations);
     }
 
@@ -195,9 +198,6 @@ class BookController extends Controller {
         $book = Book::where('id', $id)->with('authors')->with('categories')->with('publisher')->with('bookItems.borrowings.user')->firstOrFail();
         return response()->json($book);
     }
-
-
-
 
 
 

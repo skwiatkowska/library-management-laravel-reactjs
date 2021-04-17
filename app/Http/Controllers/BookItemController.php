@@ -1,14 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\BookItem;
-use App\Models\Category;
-use App\Models\Publisher;
+use App\Models\User;
+use App\Models\Reservation;
+use App\Models\Borrowing;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use DateTime;
 
 class BookItemController extends Controller {
 
@@ -83,4 +86,51 @@ class BookItemController extends Controller {
             'message' => 'A book item has been updated'
         ]);
     }
+
+    public function borrowBook(Request $request, $id) {
+        $user = User::where('id', '=', $request->user_id)->firstOrFail();
+
+        $item = BookItem::with('book')->with('borrowings')->where('id', $id)->firstOrFail();
+        if ($item->status == BookItem::BORROWED || $item->is_blocked) {
+            return response()->json(['message' => 'You cannot reserve a borrowed or blocked book'], 409);
+        }
+
+        if ($request->has('reservation_id')) {
+            $reservation = Reservation::where('id', $request->reservation_id)->get()->first();
+
+            if ($reservation->user->id != $user->id) {
+                return response()->json(['message' => 'You cannot borrow a book that is already reserved by someone else'], 409);
+            } else {
+                $reservation->delete();
+            }
+        }
+
+        $borrowing = new Borrowing(['borrow_date' => new DateTime(), 'due_date' => new DateTime("+1 month"), 'was_prolonged' => false]);
+        $item->update(['status' => BookItem::BORROWED]);
+        $user->borrowings($item)->save($borrowing);
+
+        return response()->json([
+            'message' => 'A book has been borrowed'
+        ]);
+    }
+
+
+
+    public function returnBook($id) {
+        $item = BookItem::with('borrowings')->where('id', $id)->firstOrFail();
+        foreach ($item->borrowings as $borrowing) {
+            if (!isset($borrowing->actual_return_date)) {
+                $borrowing->update(['actual_return_date' => new DateTime()]);
+                $item->update(['status' => BookItem::AVAILABLE]);
+                if ($borrowing->due_date < new DateTime()) {
+                    $now = new DateTime();
+                    $interval = $now->diff(new DateTime($borrowing->due_date));
+                    $fee = $interval->d * 0.5;
+                    $borrowing->overdue_fee = $fee;
+                }
+            }
+        }
+        return response()->json([
+            'message' => 'A book has been returned'
+        ]);    }
 }
