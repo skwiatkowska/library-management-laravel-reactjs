@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use DateTime;
+use Illuminate\Support\Facades\Auth;
 
 class BookItemController extends Controller {
 
@@ -87,6 +88,7 @@ class BookItemController extends Controller {
         ]);
     }
 
+
     public function borrowBook(Request $request, $id) {
         $user = User::where('id', '=', $request->user_id)->firstOrFail();
 
@@ -132,5 +134,27 @@ class BookItemController extends Controller {
         }
         return response()->json([
             'message' => 'A book has been returned'
-        ]);    }
+        ]);
+    }
+
+
+    public function reserve($id) {
+        $user = Auth::user();
+        $item = BookItem::with('book')->with('borrowings')->where('id', $id)->firstOrFail();
+        if ($item->status != BookItem::AVAILABLE || $item->is_blocked) {
+            return response()->json(['message' => 'You cannot reserve a borrowed, reserved or blocked book'], 409);
+        }
+        $dueDate = new DateTime("+3 days");
+        if (date('w', strtotime("+3 days")) == 0) { //sunday
+            $dueDate = new DateTime("+4 days");
+        } else if (date('w', strtotime("+3 days")) == 6) { //saturday
+            $dueDate = new DateTime("+5 days");
+        }
+        $reservation = new Reservation(['due_date' => $dueDate]);
+        $item->update(['status' => BookItem::RESERVED]);
+        $user->reservations($item)->save($reservation);
+        return response()->json([
+            'message' => 'A book has been reserved'
+        ]);
+    }
 }

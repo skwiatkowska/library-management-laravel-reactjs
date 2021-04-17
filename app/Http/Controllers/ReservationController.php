@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BookItem;
 use App\Models\Reservation;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller {
 
@@ -22,7 +23,7 @@ class ReservationController extends Controller {
 
 
     public function show($id) {
-        $reservation = Reservation::where('id', $id)->firstOrFail();
+        $reservation = Reservation::where('id', $id)->with('user')->with('bookItem.book')->firstOrFail();
         return response()->json($reservation);
     }
 
@@ -36,6 +37,38 @@ class ReservationController extends Controller {
         return response()->json([
             'message' => 'A reservation has been deleted'
         ]);
+    }
+
+    public function deleteAsUser($id) {
+        $reservation = Reservation::where('id', $id)->firstOrFail();
+        if ($reservation->user->id == Auth::user()->id) {
+            $item = $reservation->bookItem;
+            $item->update(['status' => BookItem::AVAILABLE]);
+
+            $reservation->delete();
+            return response()->json([
+                'message' => 'A reservation has been deleted'
+            ]);
+        } else {
+            return response()->json(['message' => 'Cannot find a reservation assigned to this account'], 409);
+        }
+    }
+
+
+    public function userReservations() {
+        $user = Auth::user();
+        $now = new \DateTime();
+        $reservations = $user->reservations;
+       
+        foreach ($reservations as $reservation) {
+            $reservation->bookItem = Reservation::where('id', $reservation->id)->with('bookItem.book')->get()->first()->bookItem;
+            if (new \DateTime($reservation->due_date) < $now) {
+                $item = $reservation->bookItem;
+                $item->update(['status' => BookItem::AVAILABLE]);
+                $reservation->delete();
+            }
+        }
+        return response()->json($reservations);
     }
 
 }
