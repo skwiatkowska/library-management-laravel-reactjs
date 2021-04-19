@@ -10,11 +10,12 @@
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::group(['prefix' => 'admin', 'middleware' => ['cors']], function () {
+    Route::post('/login', 'Auth\AdminController@login');
+});
 
-Route::post('/admin/login', 'Auth\AdminController@login');
 
-
-Route::group(['prefix' => 'user'], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['cors']], function () {
     Route::post('/login', 'Auth\UserController@login');
     Route::post('/register', 'Auth\UserController@register');
 
@@ -35,7 +36,7 @@ Route::group(['prefix' => 'user'], function () {
 });
 
 
-Route::group(['prefix' => 'user', 'middleware' => ['assign.guard:users', 'jwt.auth']], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['assign.guard:users', 'jwt.auth', 'cors']], function () {
     Route::get('/me', 'AccountController@getAuthUser');
     Route::post('/logout', 'Auth\UserController@logout');
 
@@ -53,7 +54,7 @@ Route::group(['prefix' => 'user', 'middleware' => ['assign.guard:users', 'jwt.au
 
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => ['assign.guard:admins', 'jwt.auth']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['assign.guard:admins', 'jwt.auth', 'cors']], function () {
     Route::get('/me', 'AccountController@getAuthUser');
     Route::post('/logout', 'Auth\AdminController@logout');
     Route::post('/register', 'Auth\AdminController@register');

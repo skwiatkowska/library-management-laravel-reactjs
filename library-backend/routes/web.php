@@ -14,7 +14,7 @@
 // Route::get('/', function () {
 //     return view('welcome');
 // });
-Route::view('/{path?}', 'app');
+// Route::view('/{path?}', 'app');
 
 // use App\Models\Admin;
 // Admin::create(['email' => 'admin@admin.admin', 'password' => Hash::make('admin')]);
