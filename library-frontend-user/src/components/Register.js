@@ -53,7 +53,7 @@ class Register extends Component {
                   </div>
                   <input type="hidden" name="isModal" defaultValue="false" />
                   <div className="row d-flex justify-content-center">
-                    <button type="submit" className="btn btn-lg btn-primary">
+                    <button type="submit" className="btn btn-primary">
                       Register now
                     </button>
                   </div>

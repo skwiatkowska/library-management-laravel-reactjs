@@ -1,6 +1,6 @@
 import './App.css';
 import Home from './components/Home'
-import BookSearchForm from './components/books/BookSearchForm'
+import BookSearchPage from './components/bookSearch/BookSearchPage'
 import Register from './components/Register'
 import Login from './components/Login'
 
@@ -15,7 +15,7 @@ function App() {
           <Navbar></Navbar>
           <Switch>
               <Route exact path='/' component={Home} />
-              <Route path='/books' component={BookSearchForm} />
+              <Route path='/books' component={BookSearchPage} />
               <Route path='/register' component={Register} />
               <Route path='/login' component={Login} />
 

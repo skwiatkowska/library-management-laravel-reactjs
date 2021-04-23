@@ -20,8 +20,27 @@ class BookController extends Controller {
             $booksWithRelations = Book::with('authors')->with('categories')->with('publisher')->with('bookItems')->get();
         } else {
             if ($request->has('category')) {
-                $category = Category::where('id', $request->category)->firstOrFail();
-                $books = $category->books();
+                $categories = Category::where('name', '=~', '.*' . $request->category . '.*')->get();
+                if ($categories->count()) {
+
+                    $catIds = array();
+                    foreach ($categories as $cat) {
+                        array_push($catIds, $cat->id);
+                    }
+
+                    $books = Category::find($catIds[0])->books();
+
+                    foreach ($catIds as $index => $catId) {
+                        if ($index != 0) {
+                            $subquery = Category::find($catId)->books();
+                            if ($subquery->count() > 0) {
+                                $books = $books->merge($subquery);
+                            }
+                        }
+                    }
+                } else {
+                    return response()->json(array());
+                }
             }
 
             if ($request->has('title')) {
