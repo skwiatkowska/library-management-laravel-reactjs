@@ -5,6 +5,7 @@ class BookSearchForm extends Component {
     searchIn: null,
     phrase: null,
   };
+  
   handleSubmit = (e) => {
     e.preventDefault();
     this.setState({

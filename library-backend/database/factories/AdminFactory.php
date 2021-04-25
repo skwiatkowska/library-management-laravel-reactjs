@@ -1,7 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
-use App\Models\User;
+use App\Models\Admin;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,17 +14,14 @@ use App\Models\User;
 |
 */
 
-$factory->define(App\Models\User::class, function (Faker $faker) {
-    $pesel = $faker->unique()->numberBetween(1, 99999999999);
-    $exisitingUser = User::where('pesel', $pesel)->get()->first();
-    if ($exisitingUser) {
-        $exisitingUser->delete();
+$factory->define(App\Models\Admin::class, function (Faker $faker) {
+    $email = $faker->unique()->safeEmail;
+    $exisitingAdmin = Admin::where('email', $email)->get()->first();
+    if ($exisitingAdmin) {
+        $exisitingAdmin->delete();
     }
     return [
-        'first_name' => $faker->firstName,
-        'last_name' => $faker->lastName,
         'email' => $faker->unique()->safeEmail,
-        'pesel' => $pesel,
         'password' => bcrypt('password'),
     ];
 });

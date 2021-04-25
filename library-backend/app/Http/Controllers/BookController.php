@@ -214,7 +214,7 @@ class BookController extends Controller {
 
 
     public function show($id) {
-        $book = Book::where('id', $id)->with('authors')->with('categories')->with('publisher')->with('bookItems.borrowings.user')->firstOrFail();
+        $book = Book::where('id', $id)->with('authors')->with('categories')->with('publisher')->with('bookItems.borrowings.user')->with('bookItems.reservations.user')->firstOrFail();
         return response()->json($book);
     }
 

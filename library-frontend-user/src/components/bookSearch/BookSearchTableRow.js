@@ -15,7 +15,7 @@ class BookSearchTableRow extends Component {
         <td>
           {(() => {
             const authors = book.authors;
-            if (authors.length > 0) {
+            if (authors && authors.length > 0) {
               return (
                 <div>
                   {authors.map((author) => (
@@ -24,7 +24,7 @@ class BookSearchTableRow extends Component {
                       href={"/authors/" + author.id}
                       key={author.id}
                     >
-                      {author.last_name} {author.first_names}
+                      {author.last_name + " " + author.first_names + " "}
                     </a>
                   ))}
                 </div>
