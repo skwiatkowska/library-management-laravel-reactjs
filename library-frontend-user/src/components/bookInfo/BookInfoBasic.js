@@ -6,7 +6,7 @@ class BookInfoBasic extends Component {
 
     return (
       <div className="card-text">
-          {JSON.stringify(book.book_items)}
+          {/* {JSON.stringify(book.book_items)} */}
         <ul className="list-unstyled">
           <li>
             <strong>Title: </strong>"{book.title}"

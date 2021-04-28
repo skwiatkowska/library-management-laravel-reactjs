@@ -1,43 +1,47 @@
 import React, { Component } from "react";
 import { API_BASE_URL } from "../config";
 
-class PublisherPage extends Component {
+class AuthorPage extends Component {
   state = {
-    publisher: [],
+    author: [],
   };
 
   componentDidMount() {
     const id = this.props.match.params.id;
-    fetch(API_BASE_URL + "/publishers/" + id)
+    fetch(API_BASE_URL + "/authors/" + id)
       .then((res) => res.json())
       .then((result) => {
         this.setState({
-          publisher: result,
+          author: result,
         });
       });
   }
 
   render() {
-    const { publisher } = this.state;
+    const { author } = this.state;
 
     return (
       <div className="container col-lg-8 my-5">
         <div className="card my-1">
           <div className="h5 card-header">
-            <div className="row px-2">Publisher details</div>
+            <div className="row px-2">Author details</div>
           </div>
           <div className="card-body">
             <div className="card-text">
               <ul className="list-unstyled">
                 <li>
-                  <strong>Publisher name: </strong>
-                  {publisher.name}
+                  <strong>Surname: </strong>
+                  {author.last_name}
+                </li>
+                <li>
+                  <strong>First name: </strong>
+                  {author.first_names}
                 </li>
                 <li>
                   <strong>Books: </strong>
                   <ul className="list-group mt-2">
-                    {publisher.books &&
-                      publisher.books.map((book) => (
+                    {author.books &&
+                      author.books.map((book) => (
                         <li className="list-group-item" key={book.id}>
                           <a href={"/books/" + book.id} className="a-link-navy">
                             {book.title}
@@ -55,4 +59,4 @@ class PublisherPage extends Component {
   }
 }
 
-export default PublisherPage;
+export default AuthorPage;
