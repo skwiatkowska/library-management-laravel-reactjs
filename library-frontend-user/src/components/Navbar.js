@@ -65,9 +65,19 @@ class Navbar extends Component {
           ) : (
             <ul className="nav navbar-nav ml-auto">
               <li className="nav-item px-2">
+                <a className="nav-link" href="/my-profile">
+                  My profile
+               </a>
+              </li>
+              <li className="nav-item px-2">
+                <a className="nav-link" href="/my-books">
+                  My books
+                 </a>
+              </li>
+              <li className="nav-item px-2">
                 <a className="nav-link" href="/logout" onClick={this.logOut}>
                   Log out
-                </a>
+                 </a>
               </li>
             </ul>
           )}

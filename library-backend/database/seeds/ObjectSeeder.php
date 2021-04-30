@@ -21,22 +21,22 @@ class ObjectSeeder extends Seeder {
         $cypher = "MATCH (n) DETACH DELETE n;";
         DB::select($cypher);
 
-        $users = factory(User::class)->times(50)->create();
+        $users = factory(User::class)->times(10)->create();
         foreach ($users as $user) {
             if (rand(0, 5) != 0) {
                 $user->update(['created_at' => new \DateTime("-1 month")]);
             }
         }
-        $books = factory(Book::class)->times(20)->create();
-        $authors = factory(Author::class)->times(12)->create();
+        $books = factory(Book::class)->times(10)->create();
+        $authors = factory(Author::class)->times(5)->create();
         $publishers = factory(Publisher::class)->times(5)->create();
-        $categories = factory(Category::class)->times(5)->create();
+        $categories = factory(Category::class)->times(3)->create();
 
         $action = ["reservation", "borrowing", "return", null];
 
 
         foreach ($books as $book) {
-            $bookItems = factory(BookItem::class)->times(rand(2,2))->create();
+            $bookItems = factory(BookItem::class)->times(rand(0,2))->create();
             foreach ($bookItems as $item) {
                 if (rand(0, 15) != 0) {
                     $item->update(['created_at' => new \DateTime("-1 month")]);

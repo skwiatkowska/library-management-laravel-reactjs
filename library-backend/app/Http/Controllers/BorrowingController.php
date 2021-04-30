@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 class BorrowingController extends Controller {
 
     public function index() {
-        $borrowings = Borrowing::where('actual_return_date', null)->with('user')->with('bookItem.book')->get();
+        $borrowings = Borrowing::where('actual_return_date', null)->with('user')->with('bookItem.book.authors')->get();
         return response()->json($borrowings);
     }
 
@@ -24,10 +24,10 @@ class BorrowingController extends Controller {
         $borrowings = $user->borrowings->where('actual_return_date', null);
        
         foreach ($borrowings as $borrowing) {
-            $borrowing->bookItem = Borrowing::where('id', $borrowing->id)->with('bookItem.book')->get()->first()->bookItem;
+            $borrowing->bookItem = Borrowing::where('id', $borrowing->id)->with('bookItem.book.authors')->get()->first()->bookItem;
         }
         
-        return response()->json($borrowings);
+        return response()->json($borrowings->values());
     }
 
     public function userReturnedBooks() {
@@ -35,10 +35,10 @@ class BorrowingController extends Controller {
         $borrowings = $user->borrowings->where('actual_return_date','<>', '');
        
         foreach ($borrowings as $borrowing) {
-            $borrowing->bookItem = Borrowing::where('id', $borrowing->id)->with('bookItem.book')->get()->first()->bookItem;
+            $borrowing->bookItem = Borrowing::where('id', $borrowing->id)->with('bookItem.book.authors')->get()->first()->bookItem;
         }
         
-        return response()->json($borrowings);
+        return response()->json($borrowings->values());
     }
    
 }

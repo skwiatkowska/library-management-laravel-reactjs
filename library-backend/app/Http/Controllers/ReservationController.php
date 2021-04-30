@@ -17,13 +17,13 @@ class ReservationController extends Controller {
             $item->update(['status' => BookItem::AVAILABLE]);
             $exp->delete();
         }
-        $reservations = Reservation::with('user')->with('bookItem.book')->get();
+        $reservations = Reservation::with('user')->with('bookItem.book.authors')->get();
         return response()->json($reservations);
     }
 
 
     public function show($id) {
-        $reservation = Reservation::where('id', $id)->with('user')->with('bookItem.book')->firstOrFail();
+        $reservation = Reservation::where('id', $id)->with('user')->with('bookItem.book.authors')->firstOrFail();
         return response()->json($reservation);
     }
 
@@ -61,7 +61,7 @@ class ReservationController extends Controller {
         $reservations = $user->reservations;
        
         foreach ($reservations as $reservation) {
-            $reservation->bookItem = Reservation::where('id', $reservation->id)->with('bookItem.book')->get()->first()->bookItem;
+            $reservation->bookItem = Reservation::where('id', $reservation->id)->with('bookItem.book.authors')->get()->first()->bookItem;
             if (new \DateTime($reservation->due_date) < $now) {
                 $item = $reservation->bookItem;
                 $item->update(['status' => BookItem::AVAILABLE]);

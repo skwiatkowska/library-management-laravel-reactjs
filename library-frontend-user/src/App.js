@@ -11,6 +11,7 @@ import AuthorPage from "./components/AuthorPage";
 import PublisherPage from "./components/PublisherPage";
 import UserPage from "./components/userInfo/UserPage";
 import AuthService from "./services/AuthService";
+import UserBooksPage from "./components/userBooks/UserBooksPage";
 
 class App extends Component{
   state = {
@@ -41,6 +42,7 @@ class App extends Component{
           <Route path="/authors/:id" component={AuthorPage} />
           <Route path="/publishers/:id" component={PublisherPage} />
           <Route path="/my-profile" component={UserPage} />
+          <Route path="/my-books" component={UserBooksPage} />
 
           <Route path="/register" component={Register} />
           <Route path="/login" component={Login} />

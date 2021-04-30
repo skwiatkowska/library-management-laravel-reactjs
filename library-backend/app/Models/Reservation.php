@@ -18,7 +18,6 @@ class Reservation extends NeoEloquent {
 
 
     protected $hidden = [
-        'created_at',
         'updated_at'
     ];
 

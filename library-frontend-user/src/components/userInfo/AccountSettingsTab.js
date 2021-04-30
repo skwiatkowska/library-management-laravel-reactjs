@@ -19,7 +19,7 @@ class AccountSettingsTab extends Component {
         <tr>
           <td>Account:</td>
           <td>
-            <form action="/usun-konto" method="POST" onsubmit="return confirm('Czy na pewno chcesz usunąć swoje konto na stałe?\nWszystkie Twoje dane i historia zostaną usunięte.\nAkcja jest nieodwracalna.');">
+            <form>
               <input type="hidden" name="_method" defaultValue="DELETE" />
               <button type="submit" className="btn btn-sm btn-danger"> Delete </button>
             </form>
