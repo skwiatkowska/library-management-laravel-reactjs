@@ -1,6 +1,7 @@
 import "./App.css";
 import { Component } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css';
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import Register from "./components/Register";
@@ -12,6 +13,7 @@ import PublisherPage from "./components/PublisherPage";
 import UserPage from "./components/userInfo/UserPage";
 import AuthService from "./services/AuthService";
 import UserBooksPage from "./components/userBooks/UserBooksPage";
+import EditProfilePage from "./components/userInfo/EditProfilePage";
 
 class App extends Component{
   state = {
@@ -41,7 +43,9 @@ class App extends Component{
           <Route path="/books" component={BookSearchPage} />
           <Route path="/authors/:id" component={AuthorPage} />
           <Route path="/publishers/:id" component={PublisherPage} />
-          <Route path="/my-profile" component={UserPage} />
+          <Route exact path="/my-profile" component={UserPage} />
+          <Route exact path="/my-profile/edit" component={EditProfilePage} />
+
           <Route path="/my-books" component={UserBooksPage} />
 
           <Route path="/register" component={Register} />

@@ -18,7 +18,7 @@ class AuthorController extends Controller {
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
             'fname' => 'required',
-            'fname' => 'required'
+            'lname' => 'required'
         ]);
 
         if ($validator->fails()) {

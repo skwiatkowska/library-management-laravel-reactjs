@@ -45,15 +45,21 @@ class UserController extends Controller {
     }
 
     public function register(Request $request) {
-        if (User::where('email', $request->email)->count() > 0) {
-            return response()->json(['message' => 'A user with the given email address already exists'], 409);
+        $ext = User::where('email', $request->email)->get();
+        if ($ext->count() > 0) {
+            return response()->json(['message' => 'A user with the given email address already exists'.$ext], 409);
         }
+
         $user = User::create([
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'pesel' => $request->pesel
         ]);
 
-        return response()->json(['status' => 200, 'user' => $user]);
+        return response()->json(['message' => 'Successfully registered', 
+        'user' => $user]);
     }
 
     public function logout() {

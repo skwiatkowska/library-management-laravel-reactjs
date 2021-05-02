@@ -29,11 +29,11 @@ class AccountController extends Controller {
     public function update(Request $request) {
         $user = Auth::user();
 
-        if ($user->fname != $request->fname) {
-            $user->fname = $request->fname;
+        if ($user->first_name != $request->first_name) {
+            $user->first_name = $request->first_name;
         }
-        if ($user->lname != $request->lname) {
-            $user->lname = $request->lname;
+        if ($user->last_name != $request->last_name) {
+            $user->last_name = $request->last_name;
         }
         if ($user->pesel != $request->pesel) {
             $existingUser = User::where('pesel', $request->pesel)->get();
@@ -42,9 +42,9 @@ class AccountController extends Controller {
             }
             $user->pesel = $request->pesel;
         }
-        if ($user->phone != $request->phone) {
-            $user->phone = $request->phone;
-        }
+        // if ($user->phone != $request->phone) {
+        //     $user->phone = $request->phone;
+        // }
         if ($user->email != $request->email) {
             $existingUser = User::where('email', $request->email)->get();
             if ($existingUser->count() > 0) {
@@ -52,10 +52,11 @@ class AccountController extends Controller {
             }
             $user->email = $request->email;
         }
+
         $user->save();
         return response()->json([
             'message' => 'A user has been updated',
-            'publisher' => $user
+            'user' => $user
         ]);
     }
 

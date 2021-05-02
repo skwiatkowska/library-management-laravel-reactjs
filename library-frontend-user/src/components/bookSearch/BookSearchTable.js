@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import BookSearchTableRow from "./BookSearchTableRow";
 
-class BookSearchTable extends Component {
-  render() {
-    const { books } = this.props;
+function BookSearchTable(props){
+
+    const { books } = props;
 
     return (
       <div className="row justify-content-center">
@@ -27,7 +27,7 @@ class BookSearchTable extends Component {
         </div>
       </div>
     );
-  }
+  
 }
 
 export default BookSearchTable;

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import AuthService from "../services/AuthService";
+import { ToastContainer, toast } from 'react-toastify';
 
 class Login extends Component {
   constructor(props) {
@@ -27,29 +28,25 @@ class Login extends Component {
   handleLogin = (e) => {
     e.preventDefault();
 
-    this.setState({
-      message: "",
-    });
+    AuthService.login(this.state.email, this.state.password)
+      .then((response) => {
+        if (!response.user) throw new Error(response);
+        else return response;
+      })
+      .then(() => {
+        toast.success("Correct data");
+        setTimeout(
+          () => {
+            this.props.history.push("/my-profile");
+            window.location.reload()
+          },
+          2000
+        );
 
-      AuthService.login(this.state.email, this.state.password).then(
-        () => {
-          this.props.history.push("/my-profile");
-          window.location.reload();
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-
-          this.setState({
-            message: resMessage,
-          });
-        }
-      );
-
+      })
+      .catch((error) => {
+        toast.error(error);
+      });
   };
 
   render() {
@@ -108,7 +105,6 @@ class Login extends Component {
                       <strong>Remember me</strong>
                     </label>
                   </div>
-                  <input type="hidden" name="isModal" defaultValue="false" />
                   <div className="row d-flex justify-content-center">
                     <button type="submit" className="btn btn-primary">
                       Sign in!
@@ -119,6 +115,7 @@ class Login extends Component {
             </div>
           </div>
         </div>
+        <ToastContainer />
       </div>
     );
   }

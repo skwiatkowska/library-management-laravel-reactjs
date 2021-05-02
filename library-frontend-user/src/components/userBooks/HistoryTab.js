@@ -31,11 +31,11 @@ class HistoryTab extends Component {
   }
   render() {
     const { books } = this.state;
-    return (
+    return (books.length > 0) ? (
       <div className="tab-pane fade" id="nav-history" role="tabpanel" aria-labelledby="nav-history-tab">
-        {/* {JSON.stringify(this.state.books)} */}
-        <div className=" col-md-12 mx-auto mt-5">
-          <table className="table table-bordered text-center">
+        <div className="table-responsive mt-5">
+
+          <table className="table table-striped table-bordered">
             <thead>
               <tr>
                 <th>Book title</th>
@@ -55,8 +55,10 @@ class HistoryTab extends Component {
           </table>
         </div>
       </div>
-
-
+    ) : (
+      <div className="tab-pane fade" id="nav-history" role="tabpanel" aria-labelledby="nav-history-tab">
+        <p className="mt-5 text-center">No books to show</p>
+        </div>
     );
   }
 }

@@ -29,11 +29,11 @@ class BorrowingsTab extends Component {
     );
   }
   render() {
-    const {books} = this.state;
-    return (
+    const { books } = this.state;
+    return (books.length > 0) ? (
       <div className="tab-pane fade" id="nav-borrowing" role="tabpanel" aria-labelledby="nav-borrowing-tab">
-        <div className=" col-md-12 mx-auto mt-5">
-          <table className="table table-bordered text-center">
+        <div className="table-responsive mt-5">
+          <table className="table table-striped table-bordered">
             <thead>
               <tr>
                 <th>Book title</th>
@@ -44,7 +44,7 @@ class BorrowingsTab extends Component {
               </tr>
             </thead>
             <tbody className="item-table">
-            {books &&
+              {books &&
                 books.map((book) => (
                   <BorrowingsTabRow borrowing={book} key={book.id} />
                 ))}
@@ -54,6 +54,10 @@ class BorrowingsTab extends Component {
       </div>
 
 
+    ) : (
+      <div className="tab-pane fade" id="nav-borrowing" role="tabpanel" aria-labelledby="nav-borrowing-tab">
+        <p className="mt-5 text-center">No books to show</p>
+      </div>
     );
   }
 }

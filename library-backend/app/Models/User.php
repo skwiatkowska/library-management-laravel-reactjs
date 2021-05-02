@@ -23,8 +23,8 @@ class User extends NeoEloquent implements Authenticatable, JWTSubject {
      * @var array
      */
     protected $fillable = [
-        'fname',
-        'lname',
+        'first_name',
+        'last_name',
         'pesel',
         'phone',
         'email',

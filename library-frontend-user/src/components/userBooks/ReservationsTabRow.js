@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import UserService from "../../services/UserService";
+import { ToastContainer, toast } from 'react-toastify';
 
 class ReservationsTabRow extends Component {
 
@@ -8,25 +9,24 @@ class ReservationsTabRow extends Component {
     e.preventDefault();
     const id = e.target.elements.id.value;
    
-
-      UserService.cancelReservation(id).then(
-        () => {
-          window.location.reload();
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-
-          this.setState({
-            message: resMessage,
-          });
-        }
-      );
-
+      UserService.cancelReservation(id)
+        .then((response) => {
+          if (!response) throw new Error(response);
+          else return response;
+      })
+      .then(() => {
+          toast.success("Reservation has been cancelled");
+          setTimeout(
+              () => {
+                  window.location.reload()
+              },
+              2000
+          )
+      })
+      .catch((error) => {
+          toast.error(error);
+      });
+    
   };
 
 
@@ -73,7 +73,10 @@ class ReservationsTabRow extends Component {
                 </button>
                         <input type="hidden" name="id" value={reservation.id} />
                     </form>
+                    <ToastContainer />
+
                 </td>
+
             </tr>
 
         );

@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import AuthService from "./../services/AuthService";
+import { withRouter } from 'react-router-dom';
 
 class Navbar extends Component {
+
   logOut = () => {
+
     AuthService.logout();
     this.props.history.push("/");
-    window.location.reload();
   }
 
   render() {
@@ -75,7 +77,7 @@ class Navbar extends Component {
                  </a>
               </li>
               <li className="nav-item px-2">
-                <a className="nav-link" href="/logout" onClick={this.logOut}>
+                <a className="nav-link" href="/" onClick={this.logOut}>
                   Log out
                  </a>
               </li>
@@ -87,4 +89,4 @@ class Navbar extends Component {
   }
 }
 
-export default Navbar;
+export default withRouter(Navbar);

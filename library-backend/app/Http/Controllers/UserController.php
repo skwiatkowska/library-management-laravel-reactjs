@@ -42,10 +42,9 @@ class UserController extends Controller {
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
             'fname' => 'required',
-            'fname' => 'required',
+            'lname' => 'required',
             'email' => 'required',
             'password' => 'required',
-            'phone' => 'required',
             'pesel' => 'required'
         ]);
 
@@ -65,8 +64,8 @@ class UserController extends Controller {
             return response()->json(['message' => 'A user with the given email already exists'], 409);
         }
         $user = User::create([
-            'fname' => $request->fname,
-            'lname' => $request->lname,
+            'first_name' => $request->fname,
+            'last_name' => $request->lname,
             'pesel' => $request->pesel,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -74,7 +73,7 @@ class UserController extends Controller {
         ]);
         return response()->json([
             'message' => 'A user has been created',
-            'publisher' => $user
+            'user' => $user
         ]);
     }
 
@@ -83,33 +82,35 @@ class UserController extends Controller {
     public function update(Request $request, $id) {
         $user = User::where('id', $id)->firstOrFail();
 
-        if ($user->fname != $request->fname) {
-            $user->fname = $request->fname;
+
+        if ($user->first_name != $request->first_name && $request->first_name) {
+            $user->first_name = $request->first_name;
         }
-        if ($user->lname != $request->lname) {
-            $user->lname = $request->lname;
+        if ($user->last_name != $request->last_name && $request->last_name) {
+            $user->last_name = $request->last_name;
         }
-        if ($user->pesel != $request->pesel) {
+        if ($user->pesel != $request->pesel && $request->pesel) {
             $existingUser = User::where('pesel', $request->pesel)->get();
             if ($existingUser->count() > 0) {
                 return response()->json(['message' => 'A user with the given PESEL already exists'], 409);
             }
             $user->pesel = $request->pesel;
         }
-        if ($user->phone != $request->phone) {
+        if ($user->phone != $request->phone && $request->phone) {
             $user->phone = $request->phone;
         }
-        if ($user->email != $request->email) {
+        if ($user->email != $request->email && $request->email) {
             $existingUser = User::where('email', $request->email)->get();
             if ($existingUser->count() > 0) {
                 return response()->json(['message' => 'A user with the given email already exists'], 409);
             }
             $user->email = $request->email;
         }
+        // $user->update($request->all());
         $user->save();
         return response()->json([
             'message' => 'A user has been updated',
-            'publisher' => $user
+            'user' => $user
         ]);
     }
 

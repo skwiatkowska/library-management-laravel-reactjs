@@ -30,11 +30,11 @@ class ReservationsTab extends Component {
   }
 
   render() {
-    const {books} = this.state;
-    return (
+    const { books } = this.state;
+    return (books.length > 0) ? (
       <div className="tab-pane fade show active" id="nav-reservation" role="tabpanel" aria-labelledby="nav-reservation-tab">
-        <div className=" col-md-10 mx-auto mt-5">
-          <table className="table table-striped table-bordered text-center mt-1">
+        <div className="table-responsive mt-5">
+          <table className="table table-striped table-bordered">
             <thead>
               <tr>
                 <th>Book title</th>
@@ -57,6 +57,10 @@ class ReservationsTab extends Component {
       </div>
 
 
+    ) : (
+      <div className="tab-pane fade show active" id="nav-reservation" role="tabpanel" aria-labelledby="nav-reservation-tab">
+        <p className="mt-5 text-center">No books to show</p>
+      </div>
     );
   }
 }

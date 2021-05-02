@@ -10,6 +10,7 @@ class UserPage extends Component {
     user: [],
   };
 
+
   componentDidMount() {
     UserService.getUserProfile().then(
       (response) => {
