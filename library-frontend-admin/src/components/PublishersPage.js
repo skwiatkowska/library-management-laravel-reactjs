@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import UserService from '../services/UserService';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 class AuthorsPage extends Component {
 
@@ -39,6 +39,20 @@ class AuthorsPage extends Component {
             });
     };
 
+    handleDelete = (e) => {
+        e.preventDefault();
+        var id = e.target.elements.id.value;
+        UserService.deletePublisher(id)
+            .then(() => {
+                toast.success("A publisher has been deleted");
+                window.location.reload();
+
+            })
+            .catch((error) => {
+                toast.error(error);
+            });
+    };
+
     render() {
         const { publishers } = this.state;
         return <div className="container col-lg-10 offset-lg-1">
@@ -52,28 +66,38 @@ class AuthorsPage extends Component {
                                 onChange={this.onChangeInput}
                                 placeholder="Add..." aria-label="Search" name="name" required />
                         </div>
-                        <br />
-                        <table className="table table-bordered table-striped text-center">
-                            <thead>
-                                <tr>
-                                    <th>Publisher name</th>
-                                    <th>Action </th>
-
-                                </tr>
-                            </thead>
-                            <tbody className="item-table">
-                                {publishers.map((publisher) => (
-                                    <tr key={publisher.id}>
-                                        <td>{publisher.name}
-                                        </td>
-                                        <td>Delete</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
                     </form>
+                    <br />
+                    <table className="table table-bordered table-striped text-center">
+                        <thead>
+                            <tr>
+                                <th>Publisher name</th>
+                                <th>Action </th>
+
+                            </tr>
+                        </thead>
+                        <tbody className="item-table">
+                            {publishers.map((publisher) => (
+                                <tr key={publisher.id}>
+                                    <td>{publisher.name}
+                                    </td>
+                                    <td>
+                                        <form onSubmit={this.handleDelete}>
+                                            <button type="submit" className="btn-primary">
+                                                Delete
+                                        </button>
+                                            <input type="hidden" id="id" name="id" value={publisher.id} required />
+                                        </form>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
 
                 </div>
+                <ToastContainer />
+
             </div>
         </div>
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import UserService from '../services/UserService';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 class CategoriesPage extends Component {
     state = {
@@ -37,6 +37,23 @@ class CategoriesPage extends Component {
                 toast.error(error);
             });
     };
+
+    handleDelete = (e) => {
+        e.preventDefault();
+        var id = e.target.elements.id.value;
+        UserService.deleteCategory(id)
+            .then(() => {
+                toast.success("A category has been deleted");
+                window.location.reload();
+
+            })
+            .catch((error) => {
+                toast.error(error);
+            });
+    };
+
+
+
     render() {
         const { categories } = this.state;
         return <div className="container col-lg-10 offset-lg-1">
@@ -73,7 +90,16 @@ class CategoriesPage extends Component {
                                 <tr key={category.id}>
                                     <td>{category.name}
                                     </td>
-                                    <td>Delete</td>
+                                    <td>
+                                        <form onSubmit={this.handleDelete}>
+                                            <button type="submit" className="btn-primary">
+                                                Delete
+                                        </button>
+                                            <input type="hidden" id="id" name="id" value={category.id} required />
+                                        </form>
+                                        <ToastContainer />
+
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

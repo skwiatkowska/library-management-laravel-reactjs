@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import UserService from '../services/UserService';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 class BorrowingsPage extends Component {
     state = {
@@ -133,6 +133,8 @@ class BorrowingsPage extends Component {
                                                                 <button type="submit" className="btn btn-primary return-book">Confirm</button>
                                                                 <input type="hidden" name="book_item_id" defaultValue={b.book_item.id} />
                                                             </div>
+                                                            <ToastContainer />
+
                                                         </form>
                                                     </div>
                                                 </div>

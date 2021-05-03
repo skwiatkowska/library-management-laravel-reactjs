@@ -17,8 +17,8 @@ class AuthorController extends Controller {
 
     public function store(Request $request) {
         $validator = Validator::make($request->all(), [
-            'fname' => 'required',
-            'lname' => 'required'
+            'first_names' => 'required',
+            'last_name' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -29,8 +29,8 @@ class AuthorController extends Controller {
         }
 
         $author = Author::create([
-            'first_names' => $request->fname,
-            'last_name' => $request->lname,
+            'first_names' => $request->first_names,
+            'last_name' => $request->last_name,
         ]);
 
         return response()->json([

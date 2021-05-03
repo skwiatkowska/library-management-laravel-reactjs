@@ -36,7 +36,7 @@ class ObjectSeeder extends Seeder {
 
 
         foreach ($books as $book) {
-            $bookItems = factory(BookItem::class)->times(rand(0,2))->create();
+            $bookItems = factory(BookItem::class)->times(rand(1,4))->create();
             foreach ($bookItems as $item) {
                 if (rand(0, 15) != 0) {
                     $item->update(['created_at' => new \DateTime("-1 month")]);

@@ -5,7 +5,7 @@ import UserBooksNav from './UserBooksNav';
 import ReservationsTab from './ReservationsTab';
 import HistoryTab from './HistoryTab';
 import BorrowingsTab from './BorrowingsTab';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 class UserInfoPage extends Component {
     constructor(props) {
@@ -78,6 +78,7 @@ class UserInfoPage extends Component {
                             </div>
                         </div>
                     </div>
+                    <ToastContainer />
 
                 </div>
             </div>

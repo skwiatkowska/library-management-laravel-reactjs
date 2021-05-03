@@ -63,6 +63,18 @@ class UserService {
       });
   }
 
+  deleteCategory(id) {
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }
+    return fetch(API_BASE_URL + '/categories/ ' + id + '?' + AuthParams(), options);
+  }
+
+
   addPublisher(name) {
     let data = new FormData();
     data.append('name', name);
@@ -72,6 +84,101 @@ class UserService {
       body: data
     }
     return fetch(API_BASE_URL + '/publishers?' + AuthParams(), options).then(
+      response =>
+        response.json())
+      .then(data => {
+        // console.log('data: ' + JSON.stringify(data))
+        return data
+      });
+  }
+
+
+  deletePublisher(id) {
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }
+    return fetch(API_BASE_URL + '/publishers/ ' + id + '?' + AuthParams(), options);
+  }
+
+
+  addAuthor(first_names, last_name) {
+    let data = new FormData();
+    data.append('first_names', first_names);
+    data.append('last_name', last_name);
+
+    const options = {
+      method: 'POST',
+
+      body: data
+    }
+    return fetch(API_BASE_URL + '/authors?' + AuthParams(), options).then(
+      response =>
+        response.json())
+      .then(data => {
+        console.log('data: ' + JSON.stringify(data))
+        return data
+      });
+  }
+
+
+  deleteAuthor(id) {
+    const options = {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }
+    return fetch(API_BASE_URL + '/authors/ ' + id + '?' + AuthParams(), options);
+  }
+
+
+
+  addBook(title, isbn, authors, publisher, year, numberOfItems, category) {
+    let data = new FormData();
+    data.append('title', title);
+    data.append('isbn', isbn);
+    data.append('authors', [authors]);
+    data.append('publisher', publisher);
+    data.append('publication_year', year);
+    data.append('number_of_items', numberOfItems);
+    data.append('categories', [category]);
+
+    const options = {
+      method: 'POST',
+      body: data
+    }
+    return fetch(API_BASE_URL + '/books?' + AuthParams(), options).then(
+      response =>
+        response.json())
+      .then(data => {
+        // console.log('data: ' + JSON.stringify(data))
+        return data
+      });
+  }
+
+  updateBook(id, title, isbn, authors, publisher, year, numberOfItems, category) {
+    let data = new FormData();
+    data.append('title', title);
+    data.append('isbn', isbn);
+    data.append('authors', [authors]);
+    data.append('publisher', publisher);
+    data.append('publication_year', year);
+    data.append('number_of_items', numberOfItems);
+    data.append('categories', [category]);
+
+    const options = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: data
+    }
+    return fetch(API_BASE_URL + '/books/ ' + id + '?' + AuthParams(), options).then(
       response =>
         response.json())
       .then(data => {
@@ -129,7 +236,7 @@ class UserService {
       response =>
         response.json())
       .then(data => {
-        // console.log('data: ' + JSON.stringify(data))
+        console.log('data: ' + JSON.stringify(data))
         return data
       });
   }

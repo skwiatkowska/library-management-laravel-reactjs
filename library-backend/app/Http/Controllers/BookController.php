@@ -117,6 +117,7 @@ class BookController extends Controller {
     }
 
     public function store(Request $request) {
+        // return response()->json($request->all());
 
         $validator = Validator::make($request->all(), [
             'title' => 'required',
@@ -154,16 +155,28 @@ class BookController extends Controller {
 
         //retrieve categories for db
         if (!empty($categories)) {
-            foreach ($categories as $category) {
-                $cat = Category::find($category);
+            if(is_array($categories)){
+                foreach ($categories as $category) {
+                    $cat = Category::find($category);
+                    array_push($categoriesToAssign, $cat);
+                }
+            }
+            else{
+                $cat = Category::find($categories);
                 array_push($categoriesToAssign, $cat);
             }
         }
 
         //retrieve authors from db
         if (!empty($authors)) {
-            foreach ($authors as $author) {
-                $a = Author::find($author);
+            if(is_array($authors)){
+                foreach ($authors as $author) {
+                    $a = Author::find($author);
+                    array_push($authorsToAssign, $a);
+                }
+            }
+            else{
+                $a = Author::find($authors);
                 array_push($authorsToAssign, $a);
             }
         }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import UserService from '../services/UserService';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 
 class ReservationsPage extends Component {
     state = {
@@ -142,6 +142,8 @@ class ReservationsPage extends Component {
                             </tbody>
                         </table>
                     </div>
+                    <ToastContainer />
+
                 </div>
             </div>
 

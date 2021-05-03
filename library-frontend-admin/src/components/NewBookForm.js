@@ -1,39 +1,43 @@
 import React, { Component } from 'react';
 import UserService from '../services/UserService';
+import { ToastContainer, toast } from 'react-toastify';
 import $ from 'jquery';
+import { withRouter } from 'react-router-dom';
 
 class NewBookForm extends Component {
     state = {
         categories: [],
         publishers: [],
-        authors : []
+        authors: []
     }
 
     componentDidMount() {
-        var maxField = 6; 
+        var maxField = 6;
         var addButton = $('.add_button'); //Add button selector
         var wrapper = $('.field_wrapper'); //Input field wrapper
-        
+
         var fieldHTML = '<div class="input-group col-xs-3 mt-2 field_wrapper">'
-        +'<select data-live-search="true" id="authors" name="authors[]" class="form-control">'
-        +'<option value="" selected disabled>Choose</option>'
-        +'<option value="dadad">sa\sa</option>'
-        +'</select>'
-        +'<a type="button" class=" remove_button ml-2 my-auto"><strong><i class="fas fa-trash-alt"></i></strong></a>';
-       
-        var x = 1; 
-        
-        $(addButton).click(function(){
-            if(x < maxField){ 
-                x++; 
+            + '<select data-live-search="true" id="authors" name="authors[]" class="form-control"defaultValue="Choose">'
+            + '<option value="Choose" disabled>Choose</option>'
+            + '{authors && authors.map((author) => ('
+            + '<option value={author.id} key={author.id}>{author.first_names} {author.last_name}</option>'
+            + '))}'
+            + '</select>'
+            + '<a type="button" class=" remove_button ml-2 my-auto"><strong><i class="fas fa-trash-alt"></i></strong></a>';
+
+        var x = 1;
+
+        $(addButton).click(function () {
+            if (x < maxField) {
+                x++;
                 $(wrapper).append(fieldHTML); //Add field html
             }
         });
-        
-        $(wrapper).on('click', '.remove_button', function(e){
+
+        $(wrapper).on('click', '.remove_button', function (e) {
             e.preventDefault();
-            $(this).parent('div').remove(); 
-            x--; 
+            $(this).parent('div').remove();
+            x--;
         });
 
         UserService.getCategories()
@@ -52,7 +56,7 @@ class NewBookForm extends Component {
                 });
             });
 
-            UserService.getAuthors()
+        UserService.getAuthors()
             .then((res) => res.json())
             .then((result) => {
                 this.setState({
@@ -61,8 +65,43 @@ class NewBookForm extends Component {
             });
     }
 
+    handleSubmit = e => {
+        e.preventDefault();
+        var title = e.target.elements.title.value;
+        var isbn = e.target.elements.isbn.value;
+        var authors = e.target.elements.authors.value;
+        var publisher = e.target.elements.publisher.value;
+        var year = e.target.elements.year.value;
+        var numberOfItems = e.target.elements.numberOfItems.value;
+        var category = e.target.elements.categories.value;
+
+        UserService.addBook(
+            title,
+            isbn,
+            authors,
+            publisher,
+            year,
+            numberOfItems,
+            category
+        )
+            .then((data) => {
+                var bookId = data.book.id;
+                toast.success("A book has been added");
+                setTimeout(
+                    () => {
+                        this.props.history.push("/admin/books/" + bookId);
+                    },
+                    2000
+                );
+
+            })
+            .catch((error) => {
+                toast.error(error);
+            });
+    }
+
     render() {
-        // const { categories, publishers, authors } = this.state;
+        const { categories, publishers, authors } = this.state;
         return (
             <div className="container-fluid px-0">
                 <div className="row justify-content-center">
@@ -70,7 +109,7 @@ class NewBookForm extends Component {
                         <div className="card mt-0">
                             <div className="card-header">Add a book</div>
                             <div className="card-body">
-                                <form name="newBookForm">
+                                <form name="newBookForm" onSubmit={this.handleSubmit}>
                                     <div className="form-group row required">
                                         <label htmlFor="title" className="col-md-4 col-form-label  control-label text-md-right">Title</label>
                                         <div className="col-md-6">
@@ -86,12 +125,15 @@ class NewBookForm extends Component {
                                     <div className="form-group row required">
                                         <label htmlFor="author" className="col-md-4 col-form-label control-label text-md-right">Authors</label>
                                         <div className="col-md-6">
+
                                             <div className="control-group form-group mb-0">
                                                 <div className="input-group col-xs-3 field_wrapper">
-                                                    <select data-live-search="true" id="authors" name="authors[]" className="form-control">
-                                                        <option value selected disabled>Choose</option>
-                                                        <option value="ds">sdzdd
-                                                         </option></select>
+                                                    <select data-live-search="true" id="authors" name="authors[]" className="form-control" defaultValue="Choose">
+                                                        <option value="Choose" disabled>Choose</option>
+                                                        {authors && authors.map((author) => (
+                                                            <option value={author.id} key={author.id}>{author.first_names} {author.last_name}</option>
+                                                        ))}
+                                                    </select>
                                                 </div>
                                             </div>
                                             <fieldset className="pb-0 mb-0 mt-2">
@@ -109,9 +151,11 @@ class NewBookForm extends Component {
                                         <div className="col-md-6">
                                             <div className="control-group form-group mb-0">
                                                 <div className="input-group col-xs-3">
-                                                    <select data-live-search="true" id="publisher" name="publisher" className="form-control">
-                                                        <option value selected disabled>Choose</option>
-                                                        <option value="sd">sad</option>
+                                                    <select data-live-search="true" id="publisher" name="publisher" className="form-control" defaultValue="Choose">
+                                                        <option value="Choose" disabled>Choose</option>
+                                                        {publishers && publishers.map((p) => (
+                                                            <option value={p.id} key={p.id}>{p.name}</option>
+                                                        ))}
                                                     </select>
 
                                                 </div>
@@ -121,9 +165,8 @@ class NewBookForm extends Component {
                                     <div className="form-group row required">
                                         <label htmlFor="year" className="col-md-4 col-form-label  control-label text-md-right">Publication year</label>
                                         <div className="col-md-6">
-                                            <select id="year" name="year" className="form-control py-1 required">
-                                                <option value selected disabled>Choose</option>
-                                            </select>
+                                            <input type="number" id="year" className="form-control" name="year" min={1900} max={2021} required />
+
                                         </div>
                                     </div>
                                     <div className="form-group row required">
@@ -137,9 +180,11 @@ class NewBookForm extends Component {
                                         <div className="col-md-6">
                                             <div className="control-group form-group mb-0">
                                                 <div className="input-group col-xs-3">
-                                                    <select data-live-search="true" id="categories[]" name="categories[]" className="form-control">
-                                                        <option value selected disabled>Choose</option>
-                                                        <option value="sd">sad</option>
+                                                    <select data-live-search="true" id="categories" name="categories[]" className="form-control" defaultValue="Choose">
+                                                        <option value="Choose" disabled>Choose</option>
+                                                        {categories && categories.map((c) => (
+                                                            <option value={c.id} key={c.id}>{c.name}</option>
+                                                        ))}
                                                     </select>
 
                                                 </div>
@@ -151,6 +196,8 @@ class NewBookForm extends Component {
                                             Add
                                 </button>
                                     </div>
+                                    <ToastContainer />
+
                                 </form>
                             </div>
                         </div>
@@ -162,4 +209,4 @@ class NewBookForm extends Component {
     }
 }
 
-export default NewBookForm
+export default withRouter(NewBookForm)
