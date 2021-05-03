@@ -10,7 +10,7 @@ function UserBooksPage() {
             <div className="row justify-content-center">
                 <div className="col-md-10">
                     <div className="card my-3 form-card">
-                        <div className="card-header">Moje książki</div>
+                        <div className="card-header">My books</div>
                         <div className="card-body">
                             <div className="container">
                                 <div className="row">

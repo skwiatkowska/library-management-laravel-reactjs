@@ -1,6 +1,7 @@
 import "./App.css";
 import { Component } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import PrivateRoute from './PrivateRoute';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
@@ -43,11 +44,11 @@ class App extends Component{
           <Route path="/books" component={BookSearchPage} />
           <Route path="/authors/:id" component={AuthorPage} />
           <Route path="/publishers/:id" component={PublisherPage} />
-          <Route exact path="/my-profile" component={UserPage} />
-          <Route exact path="/my-profile/edit" component={EditProfilePage} />
+          <PrivateRoute exact path="/my-profile" component={UserPage} />
+          <PrivateRoute exact path="/my-profile/edit" component={EditProfilePage} />
 
-          <Route path="/my-books" component={UserBooksPage} />
-
+          <PrivateRoute path="/my-books" component={UserBooksPage} />
+    
           <Route path="/register" component={Register} />
           <Route path="/login" component={Login} />
         </Switch>

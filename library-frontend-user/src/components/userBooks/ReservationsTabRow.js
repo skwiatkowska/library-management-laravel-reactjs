@@ -4,30 +4,30 @@ import { ToastContainer, toast } from 'react-toastify';
 
 class ReservationsTabRow extends Component {
 
-    
-  handleSumbit = (e) => {
-    e.preventDefault();
-    const id = e.target.elements.id.value;
-   
-      UserService.cancelReservation(id)
-        .then((response) => {
-          if (!response) throw new Error(response);
-          else return response;
-      })
-      .then(() => {
-          toast.success("Reservation has been cancelled");
-          setTimeout(
-              () => {
-                  window.location.reload()
-              },
-              2000
-          )
-      })
-      .catch((error) => {
-          toast.error(error);
-      });
-    
-  };
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const id = e.target.elements.id.value;
+
+        UserService.cancelReservation(id)
+            .then((response) => {
+                if (!response) throw new Error(response);
+                else return response;
+            })
+            .then(() => {
+                toast.success("Reservation has been cancelled");
+                setTimeout(
+                    () => {
+                        window.location.reload()
+                    },
+                    2000
+                )
+            })
+            .catch((error) => {
+                toast.error(error);
+            });
+
+    };
 
 
     render() {
@@ -68,7 +68,7 @@ class ReservationsTabRow extends Component {
                 <td>{new Date(reservation.due_date).toLocaleDateString()}
                 </td>
                 <td>
-                    <form onSubmit={this.handleSumbit}>
+                    <form onSubmit={this.handleSubmit}>
                         <button type="submit" title="Cancel reservation" className="btn btn-sm btn-secondary mb-2">Cancel
                 </button>
                         <input type="hidden" name="id" value={reservation.id} />

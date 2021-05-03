@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Reservation;
+use App\Models\Borrowing;
+
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -34,8 +37,24 @@ class UserController extends Controller {
     }
 
     public function show($id) {
-        $user = User::where('id', $id)->firstOrFail();
-        return response()->json($user);
+        $user = User::where('id', $id)->with('borrowings')->with('reservations.bookItem.book.authors')->firstOrFail();
+        $borrowings = $user->borrowings->where('actual_return_date', null);
+       
+        foreach ($borrowings as $borrowing) {
+            $borrowing->bookItem = Borrowing::where('id', $borrowing->id)->with('bookItem.book.authors')->get()->first()->bookItem;
+    
+        }
+        $user->books = $borrowings->values();
+
+        $returned = $user->borrowings->where('actual_return_date','<>', '');
+       
+        foreach ($returned as $borrowing) {
+            $borrowing->bookItem = Borrowing::where('id', $borrowing->id)->with('bookItem.book.authors')->get()->first()->bookItem;
+        }
+        $user->returned = $returned->values();
+
+        return response()->json($user        
+        );
     }
 
 

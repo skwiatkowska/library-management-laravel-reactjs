@@ -15,7 +15,7 @@ class BookController extends Controller {
 
 
     public function index(Request $request) {
-        if (count($request->all()) == 0) {
+        if (count($request->all()) == 0 || (count($request->all()) == 1 && $request->token)) {
 
             $booksWithRelations = Book::with('authors')->with('categories')->with('publisher')->with('bookItems')->get();
         } else {

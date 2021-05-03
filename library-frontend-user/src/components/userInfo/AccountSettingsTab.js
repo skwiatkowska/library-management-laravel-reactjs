@@ -20,20 +20,6 @@ class AccountSettingsTab extends Component {
           },
           2000
         )
-
-
-      },
-      (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-
-        this.setState({
-          message: resMessage,
-        });
       }
     );
   };
