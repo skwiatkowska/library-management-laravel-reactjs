@@ -1,8 +1,5 @@
 <?php
 
-// header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
-// header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token, Authorization, Accept,charset,boundary,Content-Length');
-// header('Access-Control-Allow-Origin: *');
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +37,7 @@ Route::group(['prefix' => 'user', ], function () {
 });
 
 
-Route::group(['prefix' => 'user', 'middleware' => ['assign.guard:users', 'jwt.auth',]], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['assign.guard:users', 'jwt.auth']], function () {
     Route::get('/me', 'AccountController@getAuthUser');
     Route::post('/logout', 'Auth\UserController@logout');
 
