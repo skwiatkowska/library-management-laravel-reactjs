@@ -1,0 +1,522 @@
+/* 
+colors:
+#2b2d42
+#8d99ae
+#edf2f4
+#ef233c
+#d90429
+
+*/
+
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+body {
+  font-family: "Poppins", sans-serif;
+  background: #fafafa;
+  font-size: 15px;
+}
+
+p {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.1em;
+  font-weight: 300;
+  line-height: 1.7em;
+  color: #999;
+}
+
+a,
+a:hover,
+a:focus {
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.navbar {
+  padding: 15px 10px;
+  background: #fff;
+  border: none;
+  border-radius: 0;
+  margin-bottom: 40px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+  box-shadow: none;
+  outline: none !important;
+  border: none;
+}
+
+.line {
+  width: 100%;
+  height: 1px;
+  border-bottom: 1px dashed #ddd;
+  margin: 40px 0;
+}
+
+i,
+span {
+  display: inline-block;
+}
+
+.btn-primary {
+  background: #ef233c;
+  border: none;
+}
+
+.btn-primary:hover {
+  background: #d90429;
+}
+
+
+.form-control-custom {
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+}
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+.wrapper {
+  display: flex;
+  align-items: stretch;
+}
+#navbarSupportedContent > ul > li > a {
+  color: #2b2d42;
+}
+#sidebar {
+  min-width: 240px;
+  max-width: 240px;
+  background: #ef233c;
+  color: #fff;
+  transition: all 0.3s;
+}
+
+#sidebar.active {
+  min-width: 120px;
+  max-width: 120px;
+  text-align: center;
+}
+
+#sidebar.active .sidebar-header h3,
+#sidebar.active .CTAs {
+  display: none;
+}
+
+#sidebar ul li a {
+  text-align: left;
+}
+
+#sidebar.active ul li a {
+  padding: 20px 1px;
+  text-align: center;
+  font-size: 0.8em;
+}
+
+#sidebar.active ul li a i {
+  margin-right: 0;
+  display: block;
+  font-size: 1.8em;
+  margin-bottom: 5px;
+}
+
+#sidebar.active ul ul a {
+  padding: 10px !important;
+}
+
+#sidebar.active .dropdown-toggle::after {
+  top: auto;
+  bottom: 10px;
+  right: 50%;
+  -webkit-transform: translateX(50%);
+  -ms-transform: translateX(50%);
+  transform: translateX(50%);
+}
+
+#sidebarCollapse {
+  background: #2b2d42;
+}
+
+#sidebar .sidebar-header {
+  padding: 10px;
+  padding-top: 16px;
+  background: #2b2d42;
+  text-align: center;
+}
+
+#sidebar ul.components {
+  padding: 20px 0;
+  border-bottom: 1px solid#d90429;
+}
+
+#sidebar ul li a {
+  padding: 10px;
+  font-size: 1.1em;
+  display: block;
+}
+
+#sidebar ul li a:hover {
+  color: #2b2d42;
+  background: #fff;
+}
+
+#sidebar ul li a i {
+  margin-right: 10px;
+}
+
+#sidebar ul li.active > a,
+a[aria-expanded="true"] {
+  color: #fff;
+  background: #d90429;
+}
+
+.title-nav p {
+  color: #2b2d42;
+  font-size: 24px;
+  margin-bottom: 0px;
+}
+a[data-toggle="collapse"] {
+  position: relative;
+}
+
+.dropdown-toggle::after {
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+}
+
+.sidebar-submenu-item {
+  font-size: 0.9em !important;
+  padding-left: 30px !important;
+  background: #d90429;
+}
+
+ul.CTAs {
+  padding: 20px;
+}
+
+ul.CTAs a {
+  text-align: center;
+  font-size: 0.9em !important;
+  display: block;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+  width: 100%;
+  background-color: gray;
+  padding: 20px;
+  min-height: 100vh;
+  transition: all 0.3s;
+}
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+
+@media (max-width: 768px) {
+  #sidebar {
+    min-width: 120px;
+    max-width: 120px;
+    text-align: center;
+  }
+  .dropdown-toggle::after {
+    top: auto;
+    bottom: 10px;
+    right: 50%;
+    -webkit-transform: translateX(50%);
+    -ms-transform: translateX(50%);
+    transform: translateX(50%);
+  }
+
+  #sidebar .sidebar-header h3,
+  #sidebar .CTAs {
+    display: none;
+  }
+
+  #sidebar.active ul li a {
+    padding: 20px 1px;
+    text-align: center;
+    font-size: 0.8em;
+  }
+  #sidebar ul li a {
+    padding: 20px 10px;
+    text-align: center;
+  }
+  #sidebar ul li a span {
+    font-size: 0.55em;
+  }
+  #sidebar ul li a i {
+    margin-right: 0;
+    display: block;
+  }
+  #sidebar ul ul a {
+    padding: 10px !important;
+  }
+  #sidebar ul li a i {
+    font-size: 1.3em;
+  }
+  #sidebar {
+    margin-left: 0;
+    text-align: center;
+    font-size: 0.8em;
+  }
+
+  .title-nav p,
+  #sidebarCollapse span {
+    display: none;
+  }
+}
+
+.login-page {
+  width: 460px;
+  padding: 8% 0 0;
+  margin: auto;
+}
+
+.form {
+  position: relative;
+  z-index: 1;
+  background: #ffffff;
+  max-width: 460px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+.form input {
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+.form button {
+  text-transform: uppercase;
+  outline: 0;
+  background: #ef233c;
+  width: 100%;
+  border: 0;
+  padding: 15px;
+  color: #ffffff;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+.form button:hover,
+.form button:active,
+.form button:focus {
+  background: #d90429;
+}
+
+.login-body {
+  background: #2b2d4262;
+}
+
+.card {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  min-height: 240px;
+}
+
+.container {
+  padding: 15px;
+  background-color: white;
+}
+
+.modal .modal-header {
+  border-bottom: none;
+  position: relative;
+}
+.modal .modal-header .btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-top: 0;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.modal .modal-footer {
+  border-top: none;
+  padding: 0;
+}
+.modal .modal-footer .btn-group > .btn:first-child {
+  border-bottom-left-radius: 0;
+}
+.modal .modal-footer .btn-group > .btn:last-child {
+  border-top-right-radius: 0;
+}
+
+.tile.red {
+  background: #ac193d;
+}
+
+.ul-alert {
+  list-style-type: none;
+  margin: 0px;
+}
+
+.input-hidden {
+  display: none;
+}
+
+.a-link {
+  color: blue;
+}
+
+.item-list li:hover {
+  background-color: #edf2f4;
+}
+
+.item-table tr:hover,
+.list-group-item:hover {
+  background-color: #edf2f4;
+}
+
+.category-btn:hover {
+  background-color: #8d99ae;
+}
+
+.btn-primary.disabled,
+.btn-primary:disabled {
+  background-color: #8d99ae;
+  color: white;
+  cursor: no-drop;
+}
+
+.form-group.required .control-label:after {
+  content: "*";
+  color: red;
+}
+
+.selectize-input {
+  height: 100%;
+}
+
+.btn-light {
+  background-color: lightgray;
+  color: #2b2d42;
+}
+
+.a-link-navy {
+  color: navy;
+}
+
+table td a {
+  display: block;
+}
+
+/* http://cssstars.com/steps-progress-bar-only-with-css/ */
+
+.progressbar li {
+  list-style-type: none;
+  width: 33%;
+  float: left;
+  font-size: 12px;
+  position: relative;
+  text-align: center;
+  color: #7d7d7d;
+}
+
+.progressbar li:before {
+  width: 60px;
+  height: 60px;
+  content: "";
+  line-height: 60px;
+  border: 2px solid #7d7d7d;
+  display: block;
+  text-align: center;
+  margin: 0 auto 3px auto;
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+  font-weight: bold;
+  background-color: #fff;
+}
+
+.progressbar li:after {
+  width: 100%;
+  height: 2px;
+  content: "";
+  font-weight: bold;
+  position: absolute;
+  background-color: #7d7d7d;
+  top: 30px;
+  left: -50%;
+  z-index: 0;
+}
+.progressbar li:first-child:after {
+  content: none;
+}
+
+.progressbar li.active {
+  color: #630112;
+  font-weight: bold;
+}
+
+.progressbar li.active + li:after {
+  background-color: #8e031b;
+}
+
+.progressbar li.active:before {
+  border-color: #8e031b;
+  background: #d90429;
+}
+.progressbar li::before {
+  background: lightgray;
+}
+
+.progressbar {
+  counter-reset: step;
+}
+.progressbar li:before {
+  content: counter(step);
+  counter-increment: step;
+}
+
+.card-counter {
+  box-shadow: 2px 2px 10px #dadada;
+  margin: 5px;
+  padding: 20px 10px;
+  background-color: #fff;
+  height: 100px;
+  border-radius: 5px;
+  transition: 0.3s linear all;
+}
+
+.card-counter.red {
+  background: linear-gradient(45deg, #f10028, #ff5d70);
+  color: #fff;
+}
+
+.card-counter.gray {
+  background: linear-gradient(45deg, gray, lightgray);
+  color: #fff;
+}
+
+.card-counter .count-numbers {
+  position: absolute;
+  right: 35px;
+  top: 20px;
+  font-size: 32px;
+  display: block;
+}
+
+.card-counter .count-name {
+  position: absolute;
+  right: 35px;
+  top: 65px;
+  font-style: italic;
+  opacity: 0.8;
+  display: block;
+  font-size: 18px;
+}
